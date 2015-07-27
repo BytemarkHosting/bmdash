@@ -15,11 +15,22 @@ success.
 
 TODO:: Write software, then write about how to use it
 
-
 ## Development And Hacking
 
-TODO:: How am I even going to do this?
+[Vagrant][0] is used to bring up a dev envrioment quickly. You don't have to use
+this but it is there for convience. You need to have [VirtualBox][1] installed and 
+the [Oracle VM VirtualBox Extension Pack][2].
+
+Hopefully all you need to do is install vagrant, and run `vagrant up` and it 
+should do the rest for you. You can access the VM over SSH by running
+`vagrant ssh` and it should have the network address `10.0.0.123`
 
 ## Contact 
 
 Sherman - He will be hiding under the table
+
+# Links 
+
+[0] - https://docs.vagrantup.com/v2/why-vagrant/index.html
+[1] - https://www.virtualbox.org/
+[2] - http://www.oracle.com/technetwork/server-storage/virtualbox/downloads/index.html

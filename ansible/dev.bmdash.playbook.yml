@@ -1,0 +1,30 @@
+---
+ - hosts: all
+
+   remote_user: vagrant
+   sudo: yes
+
+   tasks: 
+
+    - name: Update apt-cache and upgrade
+      apt: update_cache=yes upgrade=yes
+
+    - name: Install tools 
+      apt: name={{ item }} state=present 
+      with_items:
+          - git
+          - curl
+          - vim
+          - ruby
+          - ruby-dev
+          - build-essential
+          - bundler
+
+    - name: installer bundler
+      gem: name=bundler state=present user_install=no
+
+    - name: Install Gems
+      shell: bundle
+             chdir=/vagrant
+             creates=/vagrant/Gemfile.lock
+     
