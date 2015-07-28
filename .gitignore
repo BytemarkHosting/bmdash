@@ -4,3 +4,5 @@ Gemfile.lock
 tmp/*
 data/*
 .vagrant/
+.DS_Store
+public/assets/manifest.json
