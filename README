@@ -17,20 +17,32 @@ TODO:: Write software, then write about how to use it
 
 ## Development And Hacking
 
-[Vagrant][0] is used to bring up a dev envrioment quickly. You don't have to use
-this but it is there for convience. You need to have [VirtualBox][1] installed and 
-the [Oracle VM VirtualBox Extension Pack][2].
+_Note:: Only test on OSX_
 
-Hopefully all you need to do is install vagrant, and run `vagrant up` and it 
-should do the rest for you. You can access the VM over SSH by running
-`vagrant ssh` and it should have the network address `10.0.0.123`
+For some ease, [Vagrant][0], [VirtualBox][1] and [Ansible][2] are used to make a
+development envrioment you can use with almost minimal effort. You will also 
+need to install the [Oracle VM VirtualBox Extension Pack][3]. Once you have 
+installed all of these, in the cloned git project run:
+
+    $ vagrant up
+
+This will download a Debian Jessie image, setup a VM and install all the 
+software you need to run the application. The software doesn't auto run yet so
+you need to do the following to get it started:
+
+    $ vagrant ssh
+    vagrant@dash-dev:~$ cd /vagrant
+    vagrant@dash-dev:~$ shotgun -p 8080 -o 0.0.0.0 config.ru
+
+Then in your browser you can access 10.0.0.123:8080 and see your running app
+Shotgun reloads the applicaion each time a file changes, so you can start 
+hacking away!
 
 ## Contact 
 
 Sherman - He will be hiding under the table
 
-# Links 
-
-[0] - https://docs.vagrantup.com/v2/why-vagrant/index.html
+[0] - https://docs.vagrantup.com/v2/why-vagrant/index.html 
 [1] - https://www.virtualbox.org/
-[2] - http://www.oracle.com/technetwork/server-storage/virtualbox/downloads/index.html
+[2] - http://www.ansible.com/home 
+[3] - http://www.oracle.com/technetwork/server-storage/virtualbox/downloads/index.html
