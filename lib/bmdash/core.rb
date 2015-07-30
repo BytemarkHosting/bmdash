@@ -24,16 +24,15 @@ module Bytemark
             end
             manifest = Sprockets::Manifest.new(assets, './public/assets/manifest.json').save
 
-            scheduler.every '1s' do 
+            scheduler.every '5s' do 
                ping_clients
             end
 
         end
 
-
         def self.ping_clients 
             self.connections.each do |client|
-                client << "Hello!"
+                client.stream << "ping!"
             end
         end
 
@@ -53,16 +52,31 @@ module Bytemark
         end 
 
         get '/events', provides: 'text/event-stream' do
-          pp params
+          return 403 if params[:name].nil? || params[:type].nil?
           stream :keep_open do |out|
-            settings.connections << out
+            info = {
+                :name => params[:name],
+                :type => params[:type],
+                :ip => request.ip,
+                :connected_at => DateTime.now,
+                :stream => out
+            }
+            client = ClientConnection.new info
+            settings.connections << client
           end
         end
 
         get '/' do 
             'BMDash! is here'
         end
+    end
 
-
+    class ClientConnection
+        attr_reader :name, :ip, :connected_at, :type, :stream
+        def initialize info
+            info.each do |key,value|
+               instance_variable_set "@#{key}", value
+            end
+        end
     end
 end
