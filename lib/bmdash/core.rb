@@ -69,9 +69,10 @@ module Bytemark
                 if File.exists? widget_job
                     info['job'] = true
                     self.jobs[info['name']] = Script.load(widget_job) do |script|
-                        script.__send__(:attr_accessor, 'scheduler', 'logger');
+                        script.__send__(:attr_accessor, 'scheduler', 'logger', 'events');
                         script.__send__('scheduler=', self.scheduler)
                         script.__send__('logger=', self.logger)
+                        script.__send__('events=', [])
                     end
                 else
                     info['job'] = false
@@ -131,6 +132,7 @@ module Bytemark
             set :watcher, FileWatcher.new(['./widgets', './dashboards'])
             set :watcher_thread, nil
             set :connections, []
+            set :events, []
             set :jobs, {}
             set :widgets, {}
             asset_types.each do |path|
