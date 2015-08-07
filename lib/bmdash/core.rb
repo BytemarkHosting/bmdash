@@ -115,6 +115,21 @@ module Bytemark
             end
         end
 
+        def self.send_script_events
+            self.scripts.each do |name, script|
+                script.events.each do |event|
+                    self.send_event event
+                end
+                script.events.clear
+            end
+        end
+
+        def self.send_event event
+            self.connections.each do |client|
+                client.stream << JSON.pretty_generate(event)
+            end
+        end
+
         configure do 
 
             # Deal with logging
@@ -144,6 +159,9 @@ module Bytemark
             load_widgets
 
             # Setup default events
+            scheduler.every '1s' do 
+                send_script_events
+            end
             scheduler.every '5s' do 
                ping_clients
             end
