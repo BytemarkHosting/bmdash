@@ -5,12 +5,12 @@ end
 
 def my_fortune
     fortune = `fortune`
-    fortune.gsub! /\n/, '<br />'
+    fortune.gsub! /\n/, ' '
     fortune.gsub! /\t/, '    '
-    fortune.gsub! /\\"/, '"'
-    fortune.gsub! /\\'/, '\''
+    fortune.gsub! /\\"/, ''
+    fortune.gsub! /\\'/, ''
     @events.push({ 
-        :name => 'another_test_event' ,
+        :name => 'fortune' ,
         :data => {
             :time => Time.now.to_i,
             :fortune => fortune
