@@ -68,7 +68,7 @@ module Bytemark
 
                 if File.exists? widget_job
                     info['job'] = true
-                    self.jobs[info['name']] = Script.load(widget_job) do |script|
+                    self.scripts[info['name']] = Script.load(widget_job) do |script|
                         script.__send__(:attr_accessor, 'scheduler', 'logger', 'events');
                         script.__send__('scheduler=', self.scheduler)
                         script.__send__('logger=', self.logger)
@@ -106,11 +106,11 @@ module Bytemark
         end
 
         def self.setup_widgets
-            self.jobs.each do |widget_name, job|
+            self.scripts.each do |name, script|
                 begin
-                    job.setup
+                    script.setup
                 rescue NoMethodError
-                    self.logger.warn "#{widget_name} has no run method!"
+                    self.logger.warn "#{name} has no run method!"
                 end
             end
         end
@@ -133,7 +133,7 @@ module Bytemark
             set :watcher_thread, nil
             set :connections, []
             set :events, []
-            set :jobs, {}
+            set :scripts, {}
             set :widgets, {}
             asset_types.each do |path|
                settings.assets.append_path("./assets/#{path}")
