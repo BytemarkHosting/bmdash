@@ -100,8 +100,10 @@ module Bytemark
         def self.ping_clients 
             self.logger.info 'Currently Connected: '
             self.connections.each do |client|
-                self.logger.info '    - ' + client.name
-                client.stream << "ping!"
+                self.logger.info "   - #{client.name}"
+                send_event ({
+                    :event => 'ping'
+                })
             end
         end
 
@@ -117,17 +119,27 @@ module Bytemark
 
         def self.send_script_events
             self.scripts.each do |name, script|
-                script.events.each do |event|
-                    self.send_event event
-                end
-                script.events.clear
+                    script.events.each do |event|
+                        self.send_event event
+                    end
+                    script.events.clear
             end
         end
 
         def self.send_event event
+            event = self.format_event(event)
             self.connections.each do |client|
-                client.stream << JSON.pretty_generate(event)
+                client.stream << event
             end
+        end
+
+        def self.format_event event
+          data = JSON.pretty_generate event[:data] if event[:data]
+          str = ""
+          str << "id: #{event[:id]}\n" if event[:id]
+          str << "event: #{event[:name]}\n" if event[:name]
+          str << "data: #{data}\n" if data 
+          str << "\n"
         end
 
         configure do 
@@ -217,8 +229,7 @@ module Bytemark
             end
             settings.connections << client
             logger.info "Client #{client.name} has connected!"
-            
-            out << "Hello!"
+
           end
         end
 
