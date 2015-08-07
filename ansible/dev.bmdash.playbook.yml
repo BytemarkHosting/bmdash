@@ -19,6 +19,8 @@
           - ruby-dev
           - build-essential
           - bundler
+          - fortune
+          - fortunes-off
 
     - name: installer bundler
       gem: name=bundler state=present user_install=no
