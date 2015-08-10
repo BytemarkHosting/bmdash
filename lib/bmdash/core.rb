@@ -8,6 +8,7 @@ require 'yaml'
 require 'json'
 require 'logger'
 require 'pp'
+require 'securerandom'
 require_relative '../script/lib/script.rb'
 
 module Bytemark
@@ -15,6 +16,7 @@ module Bytemark
 
         class ClientConnection
             attr_reader :name, :ip, :connected_at, :type, :stream
+            attr_accessor :token
             def initialize info
                 info.each do |key,value|
                    instance_variable_set "@#{key}", value
@@ -24,6 +26,7 @@ module Bytemark
 
         class Widget 
             attr_reader :name, :author, :email, :about, :html
+
             def initialize about
                 about.each do |key,value|
                    instance_variable_set "@#{key}", value
@@ -40,6 +43,7 @@ module Bytemark
                 JSON.pretty_generate hash
             end
         end
+
 
         def self.load_widgets
             self.widgets = {}
@@ -97,6 +101,23 @@ module Bytemark
 
         end
 
+        def self.welcome_clients 
+            self.connections.each do |client|
+                if client.token == nil
+                    client.token = SecureRandom.uuid
+                    send_event ({
+                        :id => Time.new.to_i,
+                        :name => "client_connection",
+                        :data => {
+                            :msg => "Welcome #{client.name}",
+                            :token => client.token
+                        }
+                    })
+                    self.logger.info "Welcomed #{client.name} with #{client.token}"
+                end
+            end
+        end
+
         def self.ping_clients 
             self.logger.info 'Currently Connected: '
             self.connections.each do |client|
@@ -126,10 +147,15 @@ module Bytemark
             end
         end
 
+
         def self.send_event event
             event = self.format_event(event)
             self.connections.each do |client|
-                client.stream << event
+                if client.token
+                    client.stream << event
+                else
+                    client.stream << self.format_event( { :name => 'no_token' } )
+                end
             end
         end
 
@@ -172,10 +198,15 @@ module Bytemark
 
             # Setup default events
             scheduler.every '1s' do 
+                welcome_clients
                 send_script_events
             end
-            scheduler.every '5s' do 
+
+            scheduler.every '10s' do 
                ping_clients
+            end
+
+            scheduler.every '30s' do
             end
 
             # Setup file watching
@@ -221,6 +252,7 @@ module Bytemark
                 :type => params[:type],
                 :ip => request.ip,
                 :connected_at => DateTime.now,
+                :token => nil,
                 :stream => out
             }
             client = ClientConnection.new info
