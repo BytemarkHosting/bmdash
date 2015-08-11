@@ -14,6 +14,8 @@ require_relative '../script/lib/script.rb'
 module Bytemark
     class BMDash < Sinatra::Base
 
+        class BMDashError < RuntimeError; end
+
         class ClientConnection
             attr_reader :name, :ip, :connected_at, :type, :stream
             attr_accessor :token
@@ -44,11 +46,79 @@ module Bytemark
             end
         end
 
+        class DashboardDefError < BMDashError; end
+
+        class Dashboard
+            attr_reader :name, :desc, :author, :email, :screens, :widgets
+
+            def initialize dashboard
+                # Check and set basic attributes 
+                %w(name desc author email).each do |attr|
+                    if dashboard.has_key? attr
+                        instance_variable_set "@#{attr}", dashboard[attr]
+                    else
+                        raise DashboardDefError, "#{attr} is not present in dashboard"
+                    end
+                end
+                # See if we have any screens and widgets defined
+                @screens = []
+                @widgets = []
+                if dashboard.has_key? 'screens' 
+                    screen_count = 0
+                    dashboard['screens'].each do |screen|
+                        hash = {}
+                        hash['name'] = (screen.has_key? 'name') ? screen['name'] : "Screen #{screen_count}"
+                        hash['timeout'] = (screen.has_key? 'timeout') ? screen['timeout'] : 300
+                        hash['widgets'] = []
+                        if screen.has_key? 'widgets'
+                            screen['widgets'].each do |widget|
+                                %w(name row col).each do |attr|
+                                    raise DashboardDefError, "Widgets #{attr} is missing" if ! widget.has_key? attr
+                                end
+                               @widgets << widget['name'] if ! @widgets.include?(widget['name'])
+                               hash['widgets'] << widget
+                            end 
+                        else 
+
+                        end
+                        screen_count = screen_count + 1
+
+                    end
+                else
+                    raise DashboardDefError, 'There are no screens defined!' 
+                end
+            end
+        end
+
+
+        def self.load_dashboards
+            self.logger.info 'Loading Dashboards:'
+            Dir.foreach('dashboards') do |dir|
+                next if dir[0] == '.'
+                next unless dir.match /\.yml$/
+                self.logger.info "    - Trying #{dir}"
+                dashboard_path = File.join Dir.pwd, 'dashboards', dir
+                dashboard = YAML::load_file dashboard_path 
+                begin 
+                    settings.dashboards << Dashboard.new(dashboard)
+                    
+                rescue DashboardDefError => e
+                    self.logger.error "#{dashboard_path} - #{e.message}" 
+                    self.logger.error 'Skipping...'
+                end
+            end
+
+            self.logger.info 'Available Dashboards:'
+            self.settings.dashboards.each do |dash|
+                self.logger.info "    - #{dash.name}"
+            end
+        end
 
         def self.load_widgets
-            self.widgets = {}
+            self.logger.info 'Loading Widgets:'
             Dir.foreach('widgets') do |dir|
                 next if dir[0] == '.'
+                self.logger.info "    - Trying #{dir}"
                 widget_dir = File.join Dir.pwd, 'widgets',  dir
                 widget_info = File.join widget_dir, 'about.yml'
 
@@ -185,6 +255,7 @@ module Bytemark
             set :watcher, FileWatcher.new(['./widgets', './dashboards'])
             set :watcher_thread, nil
             set :connections, []
+            set :dashboards, []
             set :events, []
             set :scripts, {}
             set :widgets, {}
@@ -195,6 +266,8 @@ module Bytemark
 
             # Load widgets from ./widgets
             load_widgets
+            # Load widgets from ./dashboards
+            load_dashboards
 
             # Setup default events
             scheduler.every '1s' do 
@@ -217,6 +290,7 @@ module Bytemark
             end
 
             # Run the setup methods in all the scripts 
+            self.logger.info "Running Widget setup:"
             setup_widgets
 
         end
