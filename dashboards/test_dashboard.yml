@@ -1,0 +1,24 @@
+---
+name: Test Dashboard
+desc: This dashboard show a bunch of test widgets and screens
+author: Sherman Rose
+email: paul.rose@bytemark.co.uk
+screens:
+    - name: Screen 1
+      timeout: 300
+      widgets:
+            - name: fortune
+              row: 1
+              col: 1
+            - name: test_widget
+              row: 2
+              col: 2
+    - name: Screen 2
+      timeout: 300
+      widgets:
+            - name: fortune
+              row: 5
+              col: 2
+            - name: test_widget
+              row: 3
+              col: 2
