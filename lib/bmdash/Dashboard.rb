@@ -16,6 +16,7 @@ module BMDash
             # See if we have any screens and widgets defined
             @screens = []
             @widgets = []
+
             if dashboard.has_key? 'screens' 
                 screen_count = 0
                 dashboard['screens'].each do |screen|
@@ -54,9 +55,10 @@ module BMDash
         end
 
         def rotate_screens
-            @screens.rotate
-            @current_screen = @screens[0]
-            #self.logger.debug "#{name} has rotated to screen #{@current_screen['timeout']}"
+            @screens.rotate!
+            @current_screen = @screens.first
+            BMDash.logger.debug "#{name} has rotated to screen '#{@current_screen['name']}'"
+            BMDash.logger.debug "Next rotation in #{@current_screen['timeout']} seconds"
             # Send event
         end
     end
