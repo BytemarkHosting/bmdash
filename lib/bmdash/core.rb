@@ -50,6 +50,7 @@ module Bytemark
 
         class Dashboard
             attr_reader :name, :desc, :author, :email, :screens, :widgets
+            attr_writer :current_screen, :update_time, :events
 
             def initialize dashboard
                 # Check and set basic attributes 
@@ -79,17 +80,35 @@ module Bytemark
                                hash['widgets'] << widget
                             end 
                         else 
-
+                            raise DashboardDefError, "#{screen['name']} has no widgets!"
                         end
                         screen_count = screen_count + 1
-
+                        @screens << hash
                     end
                 else
                     raise DashboardDefError, 'There are no screens defined!' 
                 end
+                @current_screen = @screens[0]
+                @update_time = Time.now.to_i + @current_screen['timeout']
+                @events = Queue.new
             end
-        end
 
+            def update
+               time_now = Time.now.to_i
+               if time_now > @update_time
+                    rotate_screens
+                    @update_time = Time.now.to_i + @current_screen['timeout']
+               end
+            end
+
+            def rotate_screens
+                @screens.rotate
+                @current_screen = @screens[0]
+                #self.logger.debug "#{name} has rotated to screen #{@current_screen['timeout']}"
+                # Send event
+            end
+
+        end
 
         def self.load_dashboards
             self.logger.info 'Loading Dashboards:'
@@ -111,6 +130,12 @@ module Bytemark
             self.logger.info 'Available Dashboards:'
             self.settings.dashboards.each do |dash|
                 self.logger.info "    - #{dash.name}"
+            end
+        end
+
+        def self.update_dashboards
+            self.dashboards.each do |dash|
+                dash.update
             end
         end
 
@@ -273,6 +298,7 @@ module Bytemark
             scheduler.every '1s' do 
                 welcome_clients
                 send_script_events
+                update_dashboards
             end
 
             scheduler.every '10s' do 
