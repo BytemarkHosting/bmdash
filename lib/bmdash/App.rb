@@ -107,7 +107,7 @@ module BMDash
                 if client.token == nil
                    client.token = SecureRandom.uuid
                    send_event ({
-                        :id => Time.now.nsec,
+                        :id => Time.now,
                         :event => "client_connection",
                         :data => {
                             :msg => "Welcome #{client.name}",
