@@ -120,9 +120,9 @@ module BMDash
         end
 
         def self.ping_clients 
-            self.logger.info 'Currently Connected: '
+            self.logger.debug 'Currently Connected: '
             self.connections.each do |client|
-                self.logger.info "   - #{client.name}"
+                self.logger.debug "   - #{client.name}"
                 send_event ({
                     :event => 'ping'
                 })
