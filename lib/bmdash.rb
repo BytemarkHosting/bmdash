@@ -1,1 +1,5 @@
-require_relative 'bmdash/core.rb'
+require_relative 'bmdash/Common.rb'
+require_relative 'bmdash/ClientConnection.rb'
+require_relative 'bmdash/Widget.rb'
+require_relative 'bmdash/Dashboard.rb'
+require_relative 'bmdash/App.rb'

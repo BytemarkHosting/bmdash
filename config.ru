@@ -1,3 +1,3 @@
 require_relative 'lib/bmdash'
 
-run Bytemark::BMDash
+run BMDash::App
