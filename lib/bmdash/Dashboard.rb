@@ -2,7 +2,7 @@ module BMDash
     class DashboardDefError < BMDashError; end
     class Dashboard
         attr_reader :name, :desc, :author, :email, :screens, :widgets
-        attr_writer :current_screen, :update_time, :events
+        attr_accessor :current_screen, :update_time, :events
 
         def initialize dashboard
             # Check and set basic attributes 
@@ -60,6 +60,14 @@ module BMDash
             BMDash.logger.debug "#{name} has rotated to screen '#{@current_screen['name']}'"
             BMDash.logger.debug "Next rotation in #{@current_screen['timeout']} seconds"
             # Send event
+            @events << {
+                :id => Time.now.nsec,
+                :event => "dashboard_update",
+                :data => {
+                    :name => @name,
+                    :screen => @current_screen
+                }
+            }
         end
     end
 end

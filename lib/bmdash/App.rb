@@ -14,6 +14,8 @@ require_relative '../script/lib/script.rb'
 module BMDash
     class App < Sinatra::Base
 
+        NO_TOKEN = Event.format( {:event => 'no_token'} )
+
         def self.load_dashboards
             self.logger.info 'Loading Dashboards:'
             Dir.foreach('dashboards') do |dir|
@@ -24,7 +26,6 @@ module BMDash
                 dashboard = YAML::load_file dashboard_path 
                 begin 
                     settings.dashboards << Dashboard.new(dashboard)
-                    
                 rescue DashboardDefError => e
                     self.logger.error "#{dashboard_path} - #{e.message}" 
                     self.logger.error 'Skipping...'
@@ -96,6 +97,7 @@ module BMDash
             end
         end
 
+
         def self.file_changed filename, event
 
         end
@@ -103,10 +105,10 @@ module BMDash
         def self.welcome_clients 
             self.connections.each do |client|
                 if client.token == nil
-                    client.token = SecureRandom.uuid
-                    send_event ({
-                        :id => Time.new.to_i,
-                        :name => "client_connection",
+                   client.token = SecureRandom.uuid
+                   send_event ({
+                        :id => Time.now.nsec,
+                        :event => "client_connection",
                         :data => {
                             :msg => "Welcome #{client.name}",
                             :token => client.token
@@ -139,37 +141,37 @@ module BMDash
 
         def self.send_script_events
             self.scripts.each do |name, script|
-                    script.events.each do |event|
-                        self.send_event event
-                    end
-                    script.events.clear
+                script.events.each do |event|
+                    self.send_event event
+                end
+                script.events.clear
             end
         end
 
-
-        def self.send_event event
-            event = self.format_event(event)
-            self.connections.each do |client|
-                if client.token
-                    client.stream << event
-                else
-                    client.stream << self.format_event( { :name => 'no_token' } )
+        def self.send_dashboard_events
+            self.dashboards.each do |dash|
+                while ! dash.events.empty?
+                    self.send_event dash.events.pop
                 end
             end
         end
 
-        def self.format_event event
-          data = JSON.pretty_generate event[:data] if event[:data]
-          str = ""
-          str << "id: #{event[:id]}\n" if event[:id]
-          str << "event: #{event[:name]}\n" if event[:name]
-          str << "data: #{data}\n" if data 
-          str << "\n"
+        def self.send_event event
+            begin
+                event = Event.format event
+                self.connections.each do |client|
+                    if client.token
+                        client.stream << event
+                    else
+                        client.stream << NO_TOKEN
+                    end
+                end
+            rescue BMDashError => e
+                self.logger.error "Duff event sent! #{e.message}" 
+            end
         end
 
         configure do 
-
-            # Deal with logging
 
             set :logger, BMDash.logger
 
@@ -200,8 +202,12 @@ module BMDash
             # Setup default events
             scheduler.every '1s' do 
                 welcome_clients
-                send_script_events
                 update_dashboards
+            end
+
+            scheduler.every '1s' do
+                send_dashboard_events
+                send_script_events
             end
 
             scheduler.every '10s' do 

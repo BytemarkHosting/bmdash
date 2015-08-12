@@ -10,7 +10,7 @@ def my_fortune
     fortune.gsub! /\\"/, ''
     fortune.gsub! /\\'/, ''
     @events.push({ 
-        :name => 'fortune' ,
+        :event => 'fortune' ,
         :data => {
             :time => Time.now.to_i,
             :fortune => fortune
