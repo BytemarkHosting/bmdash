@@ -251,14 +251,12 @@ module BMDash
             end
             settings.connections << client
             logger.info "Client #{client.name} has connected!"
-
           end
         end
 
         get '/' do 
-            settings.logger.info "Yeah!"
-            'BMDash! is here'
+            File.read(File.join('public', 'index.html'))     
         end
-    end
 
+    end
 end
