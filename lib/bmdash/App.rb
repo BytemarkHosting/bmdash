@@ -50,45 +50,25 @@ module BMDash
                 next if dir[0] == '.'
                 self.logger.info "    - Trying #{dir}"
                 widget_dir = File.join Dir.pwd, 'widgets',  dir
-                widget_info = File.join widget_dir, 'about.yml'
-
-                info = YAML::load_file widget_info
-
-                widget_html = File.join widget_dir, "#{info['name']}.html"
-                widget_job = File.join widget_dir, "#{info['name']}.rb"
-
-                # Check that about.yml exists, skip if not
-                if ! File.exists? widget_html 
-                    self.logger.warn "Widget #{info['name']} has no about.yml, skipping..."
-                    next
-                end
-                # Check that the html file exists, skip if not
-                if ! File.exists? widget_info 
-                    self.logger.warn "Widget #{info['name']} does not have a #{info['name']}.html file, skipping..."
-                    next
-                end
-
-                info['url'] = "widgets/#{info['name']}.html"
-
-                if File.exists? widget_job
-                    info['job'] = true
-                    self.scripts[info['name']] = Script.load(widget_job) do |script|
-                        script.__send__(:attr_accessor, 'scheduler', 'logger', 'events');
-                        script.__send__('scheduler=', self.scheduler)
-                        script.__send__('logger=', self.logger)
-                        script.__send__('events=', [])
-                    end
-                else
-                    info['job'] = false
-                end
                 
-                self.widgets[info['name']] = Widget.new(info)
-                self.asset_types.each do |asset_dir|
-                   asset_path = File.join widget_dir, asset_dir
-                   if Dir.exists? asset_path
-                       self.settings.assets.append_path(asset_path)
-                   end
+                begin
+                    # Attempt to create widget
+                    widget_info = YAML::load_file(File.join widget_dir, 'about.yml')
+                    widget_info['path'] = widget_dir
+                    widgets[widget_info['name']] = Widget.new(widget_info)
+                    # Add it's assets to Sprockets
+                    asset_paths = []
+                    widgets[widget_info['name']].assets.each do |asset|
+                       asset_type = asset.split('/')[-2]
+                       asset_paths << "#{widget_dir}/#{asset_type}" if ! asset_paths.include? asset_type 
+                    end
+                    asset_paths.each do |asset_path|
+                        self.assets.append_path asset_path
+                    end
+                rescue BMDashError => e
+                    self.logger.error "Failed to load widget from #{widget_dir} - #{e.message}" 
                 end
+
             end
 
             self.logger.info 'Available widgets:'
@@ -140,11 +120,10 @@ module BMDash
         end
 
         def self.send_script_events
-            self.scripts.each do |name, script|
-                script.events.each do |event|
-                    self.send_event event
+            self.widgets.each do |name, widget|
+                while ! widget.script.events.empty?
+                    self.send_event widget.script.events.pop
                 end
-                script.events.clear
             end
         end
 
@@ -189,6 +168,8 @@ module BMDash
             set :events, []
             set :scripts, {}
             set :widgets, {}
+            
+            # Configure sprockets to handle our default assets
             asset_types.each do |path|
                settings.assets.append_path("./assets/#{path}")
             end
