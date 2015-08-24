@@ -55,11 +55,12 @@ module BMDash
             (@script) ? true : false
         end
 
-        def to_json options
+        def to_json settings
             hash = {}
             instance_variables.each do |var|
                 key = var.to_s
                 key[0] = ''
+                next if key == 'script'
                 hash[key] = instance_variable_get var
             end
             JSON.pretty_generate hash

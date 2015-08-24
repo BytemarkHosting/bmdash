@@ -69,5 +69,17 @@ module BMDash
                 }
             }
         end
+
+        def to_json options 
+            hash = {}
+            instance_variables.each do |var|
+                key = var.to_s
+                key[0] = ''
+                next if key == 'events'
+                next if key == 'update_time'
+                hash[key] = instance_variable_get var
+            end
+            JSON.pretty_generate hash
+        end
     end
 end

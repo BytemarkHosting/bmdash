@@ -254,6 +254,25 @@ module BMDash
           end
         end
 
+        get '/dashboards/?', provides: 'application/json' do 
+            hash = {}
+            hash['dashboards'] = []
+            settings.dashboards.each do |dash|
+               hash['dashboards']  << dash
+            end
+           JSON.pretty_generate hash 
+        end
+
+        get '/widgets/?', provides: 'application/json' do 
+            hash = {}
+            hash['widgets'] = []
+            settings.widgets.each do |widget|
+               hash['widgets']  << widget
+            end
+           JSON.pretty_generate hash 
+            
+        end
+
         get '/' do 
             File.read(File.join('public', 'index.html'))     
         end
