@@ -1,2 +1,2 @@
-//= require_tree vendor
-//= require_tree BMDashClient 
+//= require_tree ./vendor
+//= require_tree ./BMDashClient 
