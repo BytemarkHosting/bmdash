@@ -83,7 +83,7 @@ module BMDash
         end
 
         def self.welcome_clients 
-            self.connections.each do |client|
+            self.connections.each do |token, client|
                 if client.token == nil
                    client.token = SecureRandom.uuid
                    send_event ({
@@ -101,7 +101,7 @@ module BMDash
 
         def self.ping_clients 
             self.logger.debug 'Currently Connected: '
-            self.connections.each do |client|
+            self.connections.each do |token, client|
                 self.logger.debug "   - #{client.name}"
                 send_event ({
                     :event => 'ping'
@@ -138,7 +138,7 @@ module BMDash
         def self.send_event event
             begin
                 event = Event.format event
-                self.connections.each do |client|
+                self.connections.each do |token, client|
                     if client.token
                         client.stream << event
                     else
@@ -163,7 +163,7 @@ module BMDash
             set :scheduler, Rufus::Scheduler.new 
             set :watcher, FileWatcher.new(['./widgets', './dashboards'])
             set :watcher_thread, nil
-            set :connections, []
+            set :connections, {}
             set :dashboards, []
             set :events, []
             set :scripts, {}
@@ -183,6 +183,9 @@ module BMDash
             # Setup default events
             scheduler.every '1s' do 
                 welcome_clients
+            end
+
+            scheduler.every '1s' do 
                 update_dashboards
             end
 
@@ -220,6 +223,52 @@ module BMDash
             settings.assets.js_compressor = :uglify
         end
 
+        before do 
+            # Check the token is valid, unless this is a request for root
+            unless ( 
+                    request.env['REQUEST_URI'] == '/' || 
+                    request.env['REQUEST_URI'].match(/assets\/?*/) )
+                halt 403 unless params.has_key?('token') 
+                halt 403 unless settings.connections.has_key?(params['token'])
+            end
+        end
+
+        helpers do 
+            
+            def new_token 
+                begin
+                    token = SecureRandom.uuid 
+                end while settings.connections.has_key? token
+                token
+            end
+
+            def remove_client client
+                settings.logger.info "Client #{client.name} disconnected"
+                settings.connections.delete(client.token)
+            end
+
+            def  check_token token
+                return  settings.connections.has_key? token
+            end 
+
+            def new_client name, type, ip, stream
+                client = ClientConnection.new({
+                    :name => name,
+                    :type => type,
+                    :ip =>ip,
+                    :connected_at => DateTime.now,
+                    :token => new_token,
+                    :stream => stream
+                })
+                client.stream.callback do 
+                    remove_client client    
+                end
+                settings.connections[client.token] =  client
+                client
+            end
+
+        end
+
         get '/assets/:asset' do 
              asset =  settings.assets.find_asset(params[:asset])
              if asset 
@@ -237,19 +286,7 @@ module BMDash
         get '/events', provides: 'text/event-stream' do
           return 403 if params[:name].nil? || params[:type].nil?
           stream :keep_open do |out|
-            info = {
-                :name => params[:name],
-                :type => params[:type],
-                :ip => request.ip,
-                :connected_at => DateTime.now,
-                :token => nil,
-                :stream => out
-            }
-            client = ClientConnection.new info
-            client.stream.callback do 
-                settings.connections.delete(client)
-            end
-            settings.connections << client
+            client = new_client params[:name], params[:type], request.ip, out 
             logger.info "Client #{client.name} has connected!"
           end
         end
@@ -274,7 +311,11 @@ module BMDash
         end
 
         get '/' do 
-            File.read(File.join('public', 'index.html'))     
+            # Assume any logic to bless clients goes here
+            # We don't have any like that atm though so just return a valid
+            # token 
+            @token = new_token
+            erb :index
         end
 
     end
