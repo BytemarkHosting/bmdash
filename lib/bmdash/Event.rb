@@ -3,11 +3,11 @@ module BMDash
         
         def self.format event
           raise BMDash::BMDashError, "Event name is missing - #{event}" unless event.keys.include? :event 
-          data = JSON.pretty_generate event[:data] if event[:data]
+          data = (JSON.generate event[:data] if event[:data]) || ""
           str = ""
           str << "id: #{event[:id]}\n" if event[:id]
           str << "event: #{event[:event]}\n" if event[:event]
-          str << "data: #{data}\n" if data 
+          str << "data: #{data}\n"
           str << "\n"
         end
 

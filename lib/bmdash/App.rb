@@ -86,7 +86,7 @@ module BMDash
             self.connections.each do |token, client|
                 if client.token == nil
                    client.token = SecureRandom.uuid
-                   send_event ({
+                   send_event 'welcome', ({
                         :id => Time.now,
                         :event => "client_connection",
                         :data => {
@@ -103,9 +103,7 @@ module BMDash
             self.logger.debug 'Currently Connected: '
             self.connections.each do |token, client|
                 self.logger.debug "   - #{client.name}"
-                send_event ({
-                    :event => 'ping'
-                })
+                send_event 'ping', { :data => { :time => DateTime.now }}
             end
         end
 
@@ -122,7 +120,7 @@ module BMDash
         def self.send_script_events
             self.widgets.each do |name, widget|
                 while ! widget.script.events.empty?
-                    self.send_event widget.script.events.pop
+                    self.send_event 'widget_update', widget.script.events.pop
                 end
             end
         end
@@ -135,8 +133,9 @@ module BMDash
             end
         end
 
-        def self.send_event event
+        def self.send_event event_name, event
             begin
+                event[:event] = event_name
                 event = Event.format event
                 self.connections.each do |token, client|
                     if client.token
@@ -214,6 +213,7 @@ module BMDash
 
         end
 
+
         configure :development do 
             enable :debug
         end
@@ -225,12 +225,12 @@ module BMDash
 
         before do 
             # Check the token is valid, unless this is a request for root
-            unless ( 
-                    request.env['REQUEST_URI'] == '/' || 
-                    request.env['REQUEST_URI'].match(/assets\/?*/) )
-                halt 403 unless params.has_key?('token') 
-                halt 403 unless settings.connections.has_key?(params['token'])
-            end
+#            unless ( 
+#                    request.env['REQUEST_URI'] == '/' || 
+#                    request.env['REQUEST_URI'].match(/assets\/?*/) )
+#                halt 403 unless params.has_key?('token') 
+#                halt 403 unless settings.connections.has_key?(params['token'])
+#            end
         end
 
         helpers do 
