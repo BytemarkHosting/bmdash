@@ -102,10 +102,16 @@ module BMDash
         def self.ping_clients 
             self.logger.debug 'Currently Connected: '
             self.connections.each do |token, client|
-                self.logger.debug "   - #{client.name}"
+                self.logger.debug "   - #{client.name} - #{client.group}"
                 send_event 'ping', { :data => { :time => DateTime.now }}
             end
+            self.logger.debug 'Current Groups:' 
+            self.groups.each do |group, count|
+                self.logger.debug "   - #{group} has #{count} memeber(s)"
+            end
         end
+
+       
 
         def self.setup_widgets
             self.scripts.each do |name, script|
@@ -164,6 +170,7 @@ module BMDash
             set :watcher_thread, nil
             set :connections, {}
             set :dashboards, []
+            set :groups, Hash.new {|h,k| h[k] = 0}
             set :events, []
             set :scripts, {}
             set :widgets, {}
@@ -244,6 +251,8 @@ module BMDash
 
             def remove_client client
                 settings.logger.info "Client #{client.name} disconnected"
+                settings.groups[client.group] -= 1
+                settings.groups.delete(client.group) if settings.groups[client.group] == 0 
                 settings.connections.delete(client.token)
             end
 
@@ -251,10 +260,10 @@ module BMDash
                 return  settings.connections.has_key? token
             end 
 
-            def new_client name, type, ip, stream
+            def new_client name, group, ip, stream
                 client = ClientConnection.new({
                     :name => name,
-                    :type => type,
+                    :group => group,
                     :ip =>ip,
                     :connected_at => DateTime.now,
                     :token => new_token,
@@ -284,10 +293,11 @@ module BMDash
         end
 
         get '/events', provides: 'text/event-stream' do
-          return 403 if params[:name].nil? || params[:type].nil?
+          return 403 if params[:name].nil? || params[:group].nil?
           stream :keep_open do |out|
-            client = new_client params[:name], params[:type], request.ip, out 
-            logger.info "Client #{client.name} has connected!"
+            client = new_client params[:name], params[:group], request.ip, out 
+            settings.groups[client.group] += 1
+            settings.logger.info "Client #{client.name} in group #{client.group} has connected!"
           end
         end
 

@@ -1,6 +1,6 @@
 module BMDash 
     class ClientConnection
-        attr_reader :name, :ip, :connected_at, :type, :stream
+        attr_reader :name, :ip, :connected_at, :group, :stream
         attr_accessor :token
         def initialize info
             info.each do |key,value|
