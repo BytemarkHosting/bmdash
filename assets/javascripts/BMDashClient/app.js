@@ -1,4 +1,4 @@
-var app = angular.module('BMDashClient', []);
+var BMDash = angular.module('BMDash', []);
 
 $(function(){
 
@@ -10,3 +10,5 @@ $(function(){
     });
 
 });
+
+

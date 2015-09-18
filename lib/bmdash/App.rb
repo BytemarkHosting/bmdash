@@ -158,11 +158,11 @@ module BMDash
         configure do 
 
             set :logger, BMDash.logger
-
             # Setup defaults 
             set :server, 'thin'
             set :root, Dir.pwd
-            set :public_folder, File.join(settings.root, 'public')
+            set :public_folder, File.join(settings.root, 'views')
+            set :static, true
             set :assets, Sprockets::Environment.new(settings.root)
             set :asset_types, %w(javascripts stylesheets fonts images sounds)
             set :scheduler, Rufus::Scheduler.new 
