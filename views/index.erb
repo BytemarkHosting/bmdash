@@ -13,10 +13,16 @@
     <link rel="stylesheet" href="/assets/application.css?token=<%= @token %>" />
 </head>
 
-<body ng-app="BMDashClient">
+<body ng-app="BMDash">
+
+    <div ng-controller="Main" id="Main">
+        <div ng-include="'login.html'"></div>
+    </div>
+    
     <script src="/assets/application.js?token=<%= @token %>"></script>
     <script type="text/javascript">
-        var token = "<%= @token %>"
+        BMDash.value('token' , '<%= @token %>');
+        var token = '<%= @token %>';
     </script>
   </body>
 </html>
