@@ -3,6 +3,9 @@ name: Test Dashboard
 desc: This dashboard show a bunch of test widgets and screens
 author: Sherman Rose
 email: paul.rose@bytemark.co.uk
+groups:
+    - testing
+    - foo
 screens:
     - name: Screen 1
       timeout: 300
