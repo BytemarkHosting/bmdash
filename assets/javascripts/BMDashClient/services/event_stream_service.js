@@ -1,19 +1,27 @@
 BMDash.service('EventStream', ['$q', '$interval', function($q, $interval){
 
+        this.client_name = null
+        this.group_name = null
+
         this.deferred = $q.defer();
         this.stream = this.deferred.promise;
 
-        this.stream.finally(function(p){
-            // this gets run in the Window scope =[
-            console.log(this);
-            $interval.cancel(this.watcher);
-        });
+        this.reset = function(){
+            this.deferred = $q.defer();
+            this.stream = this.deferred.promise;
+        }
+
+        this.is_closed = function(){
+            if (typeof this.stream == "EventSource"){
+                return (this.stream.readyState == 2) ? true : false
+            }
+        }
+
 
         this.check_connection_state = function(args){
             var stream = args.stream;
-            var deferred = args.deferred;
+            var deferred = args.EventStream.deferred;
 
-            console.log('Checking EventSource connection state!', stream);
             if (stream.readyState == 0){
                 // Stream state connecting  
                 deferred.notify('Trying connection to ' + stream.url);
@@ -32,23 +40,25 @@ BMDash.service('EventStream', ['$q', '$interval', function($q, $interval){
                 }
                 stream.onerror = function(event){
                     console.log('EVENTSTREAM: We hit an error boss! Closing the Stream!')
-                    console.log(event)
                     stream.close()
                 }
                 stream.addEventListener('ping', function(event){
                     data = JSON.parse(event.data);
                     console.log('PING: recieved Ping from the server. Sent at ' + data.time);
                 });
-                $interval.cancel(this.watcher);
+                $interval.cancel(args.EventStream.watcher);
                 deferred.resolve(stream);
             }
         }
+
         this.connect = function(client_name, client_group){
+            this.client_name = client_name;
+            this.client_group = client_group;
             stream = new EventSource('/events?name='+client_name+'&group='+client_group)
             this.watcher = $interval(this.check_connection_state, 500, 
                 null, null, {
                 stream: stream, 
-                deferred: this.deferred
+                EventStream: this
             });
         }
 }]);

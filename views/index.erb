@@ -16,7 +16,7 @@
 <body ng-app="BMDash">
 
     <div ng-controller="Main" id="Main">
-        <div ng-include="'login.html'"></div>
+        <div ng-include="'login.html'" ng-hide"connected"></div>
     </div>
     
     <script src="/assets/application.js?token=<%= @token %>"></script>
