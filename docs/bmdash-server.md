@@ -1,13 +1,3 @@
-# Bytemark Dashboards (bmdash)
-
-## How it all works
-
-This piece of software is designed to be as easy as possible to aquire, run and
-extend in the form of adding new widgets and dashboards.
-There is also an effort to make the code as easy and as clear as possible to 
-ensure that it can be extended at it's core. To that end, here is some docs to 
-explain how everything works
-
 ### Server Side
 The server is a Ruby application based on `sinatra` It provides:
 
@@ -20,7 +10,7 @@ The server is a Ruby application based on `sinatra` It provides:
 #### SSE Event (Server Sent Events) Stream
 Sever sent events are a mechanism for server to send updates to listening
 clients. It works similarily to [long HTTP polling][3] or [COMET][4], but has a
-defined structure with it messages. Read more about it on [Mozilla Developer
+defined structure with it's messages. Read more about it on [Mozilla Developer
 Netowrk][5] 
 
 Each widget can send it's own events that client side code can respond to. As 
