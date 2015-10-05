@@ -1,0 +1,132 @@
+@mixin input-placeholder {
+  &.placeholder { @content; }
+  &:-moz-placeholder { @content; }
+  &::-moz-placeholder { @content; }
+  &:-ms-input-placeholder { @content; }
+  &::-webkit-input-placeholder { @content; }
+}
+// Helper mixin for headings
+@mixin heading($font-size: 18px, $pad-top: 1, $pad-bottom: 0.5) {
+  font-size: $font-size;
+  line-height: $font-size * 1.5;
+  margin-top: $padding * $pad-top;
+  margin-bottom: $padding * $pad-bottom;
+}
+
+@mixin vertical-align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+@mixin font-smoothing($value: on) {
+  @if $value == on {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  @else {
+    -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: auto;
+  }
+}
+
+
+@mixin form($formPadding: $padding, $fieldsetPaddingY: ($padding / 1.5), $fieldPadding: 18px, $labels: 24%, $inputs: 45%, $errors: 31%) {
+
+  padding: 0 $formPadding;
+
+  fieldset {
+    padding: $fieldsetPaddingY $formPadding $fieldsetPaddingY $formPadding;
+  }
+  .field {
+
+
+    label, .field-input, .field-help {
+      float: left;
+      @include box-sizing(border-box);
+    }
+    label {
+      width: $labels;
+      padding-right: $fieldPadding;
+    }
+    .field-input {
+      width: $inputs;
+    }
+    .field-msg {
+      width: $errors;
+      //padding-left: $fieldPadding;
+    }
+  }
+
+  // Buttons align with inputs
+  div.buttonGroup {
+
+    padding: 0 $formPadding;
+
+    div.contents {
+      @include box-sizing(border-box);
+      padding: $fieldsetPaddingY 0 $fieldsetPaddingY $labels;
+      button {
+        margin-right: $fieldPadding;
+      }
+    }
+  }
+}
+
+@mixin buttonSize(
+  $buttonFontSize: $base-font-size,
+  $buttonPaddingY: ($padding / 2),
+  $buttonPaddingX: ($padding / 2)
+) {
+
+  padding: $buttonPaddingY $buttonPaddingX;
+  font-size: $buttonFontSize;
+  line-height: $buttonFontSize;
+
+  &:before, &:after {
+    font-size: $buttonFontSize * 1.15;
+    line-height: $buttonFontSize;
+  }
+  &:before {
+    padding-right: 0.4em;
+  }
+  &:after {
+    padding-left: 0.4em;
+  }
+}
+@mixin buttonColor(
+  $buttonBackground: $highlight-blue,
+  $buttonColor: #fff,
+  $buttonHover: true
+) {
+  background-color: $buttonBackground;
+  color: $buttonColor;
+
+  &:before, &:after {
+    color: rgba($buttonColor, 0.9);
+  }
+  @if $buttonHover == true {
+    &:hover {
+      @if $buttonBackground != 'transparent' {
+        background-color: darken($buttonBackground, 10);
+      }
+    }
+    &:focus {
+      outline: none;
+      background-color: lighten($highlight-blue, 30);
+      color: $blue;
+      &:before, &:after {
+        color: $blue;
+      }
+    }
+    &:active {
+      @if $buttonBackground != 'transparent' {
+        background-color: darken($buttonBackground, 10);
+      }
+      color: $buttonColor;
+    }
+  }
+
+}

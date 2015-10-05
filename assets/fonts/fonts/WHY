@@ -1,0 +1,3 @@
+The bytemark-style repo assumes that these fonts can be accessed by the client at /fonts/neotech/* However Sprockets will strip the first /fonts/ in the path. It was just easier to put a fonts dir in fonts. Any other fonts that are needed will go in /assets/fonts/ not /assets/fonts/fonts/
+
+- Sherman

@@ -1,0 +1,42 @@
+/*
+Tables
+
+Simplified table design for building upon.
+
+Styleguide 3
+*/
+
+/*
+Table Design
+
+Markup:
+<div class="table">
+  <table>
+    <tr>
+      <th>Col1</th>  
+      <th>Col2</th>        
+    </tr>
+    <tr>
+      <td>cell 1</td>  
+      <td>cell 2</td>  
+    </tr>
+  </table>
+</div>
+
+Styleguide 3.1
+*/
+
+table {
+  &.full {
+    width: 100%;
+  }
+  th, td {
+    padding: 0.5em 0.5em;
+    border: 1px solid $border-color;
+    text-align: left;
+  }
+
+  th {
+    background: $grey;
+  }
+}

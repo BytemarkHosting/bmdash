@@ -1,0 +1,294 @@
+body.layout-left-sidebar {
+  min-height: 100%;
+
+  padding-top: 3em;
+
+  @media only screen and (min-width: $desktop-size) {
+    padding-top: 0;
+  }
+
+  header.sidebar {
+
+    background: $blue;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1em 1em;
+    
+    @include transition-property("all");
+    @include transition-duration(0.15s);
+    @include transition-timing-function($ease-in-out-quad);
+    z-index: 102;
+    box-shadow: 0px 5px 10px rgba($black, 0.2);
+
+    min-width: 320px;
+    @media only screen and (min-width: $desktop-size) {
+      min-width: 0px;
+      bottom: 0;
+      right: auto;
+      width: 15em;
+      padding: 3em 1.5em 1.5em 1.5em;
+      box-shadow: inset 0px 0px 20px rgba($black, 0.2);
+    }
+
+    h1 {
+      font-size: 1.3em;
+      line-height: 21px;
+      color: $yellow;
+      margin-bottom: 0;
+      //color: lighten($text-color, 5);
+      
+      a {
+        display: block;
+        float: left;
+      }
+      @media only screen and (min-width: $desktop-size) {
+        font-size: 1.1em;
+        margin-bottom: $padding;
+
+        a {
+          float: none;
+        }
+      }
+
+      em {
+        font-style: normal;
+        display: block;
+        clear: left;
+      }
+
+      font-weight: normal;
+
+      .intrinsic-logo {
+        width: 160px;
+        float: left;
+        display: block;
+        margin: 0 6px 0 0;
+        @media only screen and (min-width: $desktop-size) {
+          margin: 0 0 6px 0;
+        }
+        svg {
+          @media only screen and (min-width: $desktop-size) {
+            float: none;
+          }
+          path, polygon, rect {
+            fill: #fff;
+          }
+        }
+      }
+    }
+  }
+
+
+  div.menu {
+    display: none;
+  }
+  
+  &.open_nav {
+    header.sidebar {
+      min-height: 100%;
+    }
+    div.menu {
+      display: block;
+      padding: 1.5em 1em;
+      text-align: center;
+      width: 100%;
+      clear: left;
+
+      ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font-size: 1.8em;
+        line-height: 1.8em;
+        border: none;
+        li {
+          margin: 0;
+          padding: 0;
+          border: none;
+        }
+        a {
+          display: block;
+          padding: 6px 0;
+          border: none;
+
+          &.button {
+            font-size: 1em;
+            line-height: 1.8em;
+          }
+        }
+      }
+    }
+  
+  }
+
+  @media only screen and (min-width: $desktop-size) {
+    header.sidebar {
+      min-height: 0px;
+      div.menu {
+        display: block;
+      }
+    }
+    &.open_nav {
+      div.menu {
+        display: block;
+        padding: 0;
+        text-align: left;
+        width: auto;
+        clear: none;
+
+        ul {
+          list-style: none;
+          margin: 0;
+          padding: 0;
+          font-size: 1em;
+          line-height: 1em;
+          border: none;
+        }
+      }
+    
+    }
+  }
+
+  section.content {
+    min-width: 320px;
+    @media only screen and (min-width: $desktop-size) {
+      margin-left: 15em;
+    }
+    
+    div.container {
+      margin: 0;
+    }
+  }
+
+  div.text-block {
+    padding: 0 0.75em;
+  }
+  .application-block {
+    @include span(12 of 12);
+  }
+  @media only screen and (min-width: $desktop-size) {
+    div.text-block {
+      max-width: 42em;
+    }
+  }
+  @media only screen and (min-width: $full-size) {
+    .application-block {
+      @include span(10 of 12);
+    }
+  }
+
+  // Offscreen menu
+  nav {
+
+    a.toggle_menu {
+      display: block;
+      position: absolute;
+      top: 1em;
+      right: $padding;
+      background: transparent;
+      height: 20px;
+      width: 30px;
+      text-indent: -99999px;
+      border: none;
+      cursor: pointer;
+      span, span:before, span:after {
+        cursor: pointer;
+        border-radius: 1px;
+        height: 4px;
+        width: 30px;
+        background: white;
+        position: absolute;
+        display: block;
+        text-indent: -99999px;
+        content: '';
+        left: 0px;
+        @include transition-property("all");
+        @include transition-duration(0.15s);
+        @include transition-timing-function($ease-in-out-quad);
+      }
+      span {
+        top: 8px;
+      }
+      span:before {
+        top: -8px;
+      }
+      span:after {
+        top: 8px; 
+      }
+
+      &:hover {
+        span, span:before, span:after {
+          background: $yellow;
+        }
+      }
+      
+    }
+  }
+
+  &.open_nav {
+    nav {
+      a.toggle_menu {
+        span {
+          /*hide the middle line*/
+          background: transparent;
+       
+          /*overlay the lines by setting both their top values to 0*/
+          &:before, &:after {
+            @include transform-origin(50% 50%);
+            top: 0;
+            width: 30px;
+          }
+       
+          // rotate the lines to form the x shape
+          &:before {
+            @include transform(rotate3d(0,0,1,45deg));
+          }
+          &:after{
+            @include transform(rotate3d(0,0,1,-45deg));
+          }
+        }
+      }
+    }
+  }
+
+  @media only screen and (min-width: $desktop-size) {
+    nav {
+      div.menu {
+        display: block;
+      }
+      a.toggle_menu {
+        display: none;
+      }
+      a {
+        color: $text-color;
+        display: block;
+        padding: ($half-padding / 2) $half-padding;
+        color: rgba(#fff, 0.9);
+        padding-left: 0;
+        border-bottom: 1px solid rgba(#fff, 0.2);
+        text-decoration: none;
+      }
+      ul {
+        border-top: 1px dotted rgba(#fff, 0.2);
+        ul {
+          border-bottom: 1px dotted rgba(#fff, 0.2);
+          border-top: none;
+          //padding-bottom: 0.5em;
+          li {
+            border: none;
+          }
+          a {
+            margin-left: $half-padding;
+            font-weight: normal;
+            border: none;
+            color: #fff;
+          }
+        }
+      }
+    }
+  }
+
+}
+

@@ -1,0 +1,110 @@
+/*
+Colours
+
+The colour palette used for Bytemark-branded pages.
+
+Markup:
+<div class="pad2 round color-light fill-blue">$blue <strong>#004EA4</strong></div>
+<div class="pad2 round color-light fill-highlight-blue">$highlight-blue <strong>#3596d7</strong></div>
+<div class="pad2 round color-light fill-green">$green <strong>#33ca9e</strong></div>
+<div class="pad2 round fill-yellow">$yellow <strong>#f8ed05</strong></div>
+<div class="pad2 round color-light fill-red">$red <strong>#ec7063</strong></div>
+<div class="pad2 round color-light fill-black">$black <strong>#33ca9e</strong></div>
+<div class="pad2 round fill-grey">$grey <strong>#e3e3e3</strong></div>
+<div class="pad2 round fill-light-grey">$light-grey <strong>#e3e3e3</strong></div>
+
+Styleguide 5
+*/
+
+
+$color-stack:
+  (group: orange, id: normal, color: #e67835),
+  (group: orange, id: pale, color: #f8a878),
+  (group: orange, id: dark, color: #ad490c),
+  (group: blue, id: normal, color: #426682);
+
+// Color  Function
+@function color($group, $shade:normal, $transparency:1){
+  @each $color in $color-stack{
+    $c-group: map-get($color, group);
+    $c-shade: map-get($color, id);
+    @if($group == map-get($color, group) and $shade == map-get($color, id)){
+      @return rgba(map-get($color, color), $transparency);
+    }
+  }
+}
+
+$text-color: #575558;
+
+$blue: #004EA4;
+$highlight-blue: #3596d7;
+$green: #33ca9e;
+$yellow: #f8ed05;
+$grey: #e3e3e3;
+$red: #ec7063;
+$off-white: #f2f2f2;
+
+$light-grey: lighten(#e3e3e3, 4);
+
+$black: darken($blue, 22);
+
+$heading-color: darken($blue, 2);
+$link-color: lighten($blue, 8);
+$border-color: darken($grey, 10);
+
+.color-text {
+  color: $text-color;
+}
+.color-light {
+  color: rgba(#fff, 0.9);
+}
+
+.color-heading {
+  color: $heading-color;
+}
+.color-link {
+  color: $link-color;
+}
+
+.fill-blue {
+  background: $blue;
+}
+.fill-highlight-blue {
+  background: $highlight-blue;
+}
+.fill-green {
+  background: $green;
+}
+.fill-yellow {
+  background: $yellow;
+}
+.fill-red {
+  background: $red;
+}
+.fill-black {
+  background: $black;
+}
+.fill-grey {
+  background: $grey;
+}
+.fill-light-grey {
+  background: $light-grey;
+}
+.fill-off-white {
+  background: $off-white;
+}
+
+/*
+Text Colours
+
+Markup:
+<h3>Headings have a slightly darker Bytemark blue</h3>
+<p class="color-heading">But any element can be given this colour</p>
+<p>Standard text colour is inherited from body</p>
+<div class="fill-red">
+  <p class="color-light">Light colour for dark background</p>
+</div>
+<p>Links are <a href="">distinguised from headings</a> with a slightly lighter Bytemark blue</p>
+
+Styleguide 5.1
+*/

@@ -179,7 +179,7 @@ module BMDash
             asset_types.each do |path|
                settings.assets.append_path("./assets/#{path}")
             end
-            manifest = Sprockets::Manifest.new(assets, './public/assets/manifest.json').save
+            manifest = Sprockets::Manifest.new(assets, './assets/manifest.json').save
 
             # Load widgets from ./widgets
             load_widgets
@@ -278,8 +278,9 @@ module BMDash
 
         end
 
-        get '/assets/:asset' do 
-             asset =  settings.assets.find_asset(params[:asset])
+        get %r{/assets/(.+)?/?} do 
+             pp params
+             asset =  settings.assets.find_asset(params['captures'].first)
              if asset 
                  content_type asset.content_type
                  asset
@@ -287,6 +288,13 @@ module BMDash
                 404
              end
         end 
+
+        get '/list_assets/' do 
+            pp settings.assets
+            settings.assets.logical_paths do  |log, file|
+                pp "#{log}  --  #{file}"
+            end
+        end
 
         get '/widgets' do 
                 json settings.widgets

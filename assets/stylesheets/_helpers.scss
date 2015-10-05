@@ -1,0 +1,11 @@
+.round {
+  border-radius: 3px;
+}
+
+.desktop {
+  display: none;
+
+  @media only screen and (min-width: $desktop-size) {
+    display: block;
+  }
+}

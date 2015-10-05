@@ -1,0 +1,338 @@
+/*
+Typography
+
+Typefaces, base styles and code blocks for text elements.
+
+Styleguide 7
+*/
+
+/*
+Open Sans
+
+This is loaded via Google Fonts, and comes in two weights (regular and medium)
+
+Markup:
+<ul>
+  <li>Regular weight is used for all text elements</li>
+  <li><em>Italic text for the regular weight</em></li>
+  <li><strong>Bold text gets the medium weight treatment</strong></li>
+  <li><strong><em>Bold and Italic</em></strong></li>
+</ul>
+
+Styleguide 7.1
+*/
+
+// Open Sans
+@import url('//fonts.googleapis.com/css?family=Open+Sans:400italic,400,600,600italic');
+
+strong {
+  font-width: 600;
+}
+em {
+  font-style: italic;
+}
+.opensans {
+  font-family: $font-family;
+}
+
+
+/*
+Neo Tech
+
+This font has some inconsistencies, and only really works in combination with Font Smoothie. There are three weights.
+
+Markup:
+<ul>
+  <li class="neotech">Regular weight</li>
+  <li class="neotech-medium">Medium weight</li>
+  <li class="neotech-bold">Bold weight</li>
+</ul>
+
+Styleguide 7.2
+*/
+
+.neotech {
+  font-family: 'NeoTech-Regular';
+}
+.neotech-medium {
+  font-family: 'NeoTech-Medium';
+}
+.neotech-bold {
+  font-family: 'NeoTech-Bold';
+}
+
+
+// Body styles
+body {
+  color: $text-color;
+  font-family: $font-family;
+  font-size: $base-font-size;
+  line-height: $base-line-height;
+
+  @media only screen and (min-width: $tablet-size) {
+    font-size: $tablet-base-font-size;
+    line-height: $tablet-base-line-height;
+  }
+  @media only screen and (min-width: $desktop-size) {
+    font-size: $desktop-base-font-size;
+    line-height: $desktop-base-line-height;
+  }
+}
+
+
+
+em {
+  font-style: italic;
+
+  &.highlight {
+    font-style: normal;
+    color: $black;
+    background: lighten($yellow, 44);
+    padding: 0.15em 0em;
+  }
+}
+
+small {
+  font-size: 0.8em;
+  line-height: 1.5em;
+}
+
+input, button, select {
+  font-family: $font-family;
+  font-size: $base-font-size;
+
+  @media only screen and (min-width: $tablet-size) {
+    font-size: $tablet-base-font-size;
+    line-height: $tablet-base-line-height;
+  }
+  @media only screen and (min-width: $desktop-size) {
+    font-size: $desktop-base-font-size;
+    line-height: $desktop-base-line-height;
+  }
+}
+
+abbr {
+  font-size: 0.9em;
+  cursor: help;
+  &:hover {
+    border-bottom: 1px dotted #bbb;
+  }
+}
+
+a {
+  color: $link-color;
+  text-decoration: none;
+  border-bottom: 1px dotted $link-color;
+  @include transition-property("background, color, border");
+  @include transition-duration(0.15s);
+  @include transition-timing-function($ease-in-out-quad);
+  &:hover {
+    background: lighten($link-color, 54);
+    color: darken($link-color, 15);
+    border-bottom-color: darken($link-color, 15);
+  }
+}
+
+
+/*
+Headings
+
+Headings are set in Neo Tech Regular by default, although this can be overridden.
+
+Markup:
+<h1>Heading 1</h1>
+<h2>Heading 2</h2>
+<h3>Heading 3</h3>
+<h4>Heading 4</h4>
+<h5>Heading 5</h5>
+<h2 class="opensans">Headings can also be Open Sans</h2>
+
+Styleguide 7.3
+*/
+h1, h2, h3, h4, h5, h6 {
+  font-weight: normal;
+  color: $heading-color;
+  line-height: 1.25em;
+  font-family: 'NeoTech-Regular';
+
+  @include font-smoothing(off);
+
+  span.section-number {
+    font-size: 0.85em;
+    color: lighten($text-color, 20);
+    font-weight: 400;
+    display: inline-block;
+    padding-right: 0.5em;
+  }
+
+  &.flush-top {
+    margin-top: 0;
+  }
+
+  &.opensans {
+    font-weight: 600;
+  }
+}
+
+
+
+h1 {
+  font-size: 2em;
+  margin-top: 1.25em;
+  margin-bottom: 0.75em;
+}
+h2 {
+  font-size: 1.5em;
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+}
+h3 {
+  font-size: 1.25em;
+  margin-top: 1.25em;
+  margin-bottom: 0.75em;
+}
+h4, h5, h6 {
+  font-size: $base-font-size;
+  line-height: $base-line-height;
+  @media only screen and (min-width: $tablet-size) {
+    font-size: $tablet-base-font-size;
+    line-height: $tablet-base-line-height;
+  }
+  @media only screen and (min-width: $desktop-size) {
+    font-size: $desktop-base-font-size;
+    line-height: $desktop-base-line-height;
+  }
+  margin-top: 1em;
+  margin-bottom: 0.75em;
+}
+h4 {
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+/*
+Sub headings
+
+Markup:
+<h1>
+  Heading 1
+  <small>
+    Sub heading
+  </small>
+</h1>
+
+Styleguide 7.3.1
+*/
+h1 {
+  small {
+    font-size: 0.7em;
+    color: lighten($text-color, 15);
+    font-family: $font-family;
+    display: block;
+    font-weight: normal;
+  }
+}
+
+
+hr {
+  height: 0px;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  border-bottom: 1px solid $border-color;
+  margin: 1.5em 0 1.5em 0;
+}
+
+
+
+
+
+p, ul, ol {
+  margin: 0 0 1em 0;
+  padding: 0;
+}
+
+ul {
+  list-style: disc;
+  margin-left: 2em;
+  ul, ol {
+    margin-bottom: 0;
+  }
+  ul {
+    list-style: disc;
+  }
+}
+ol {
+  margin-left: 2em;
+  ul, ol {
+    margin-bottom: 0;
+  }
+}
+
+// ul, ol {
+//   li {
+//     margin-bottom: 0.25em;
+//   }
+// }
+
+
+p.introduction {
+  font-size: 1.25em;
+  line-height: 1.5em;
+  color: lighten($text-color, 10);
+}
+
+ul.tickboxes {
+  list-style: none;
+  margin-left: 0;
+  li {
+
+  }
+  span.tickbox {
+    font-size: 1.75em;
+    //color: $blue;
+    display: inline-block;
+    position: relative;
+    bottom: -0.1em;
+    margin-right: 0.1em;
+  }
+}
+
+
+h1.breadcrumbs {
+  span.divider {
+    color: lighten($text-color, 35);
+  }
+}
+
+/*
+Code blocks
+
+Preformatted code blocks
+
+Markup:
+<pre class="prettyprint lang-javascript">
+var thing = function(args) {
+  return this.thing;
+};
+<pre>
+
+Styleguide 7.4
+*/
+
+pre {
+ 
+
+  &.prettyprint.prettyprinted {
+    padding: $half-padding $padding;
+    //background: lighten($grey, 5);
+    margin: 1.5em 0;
+    border: 1px solid $border-color;
+    border-left: 4px solid $blue;
+    font-size: 16px;
+    line-height: 24px;
+  }
+}
+
+

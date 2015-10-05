@@ -1,0 +1,74 @@
+// Base padding value
+// Changing this will affect spacing on everything
+$padding: 1.5em;
+$half-padding: 0.75em;
+
+// Standard breakpoints
+$mobile-size: 440px;
+$tablet-size: 714px;
+$desktop-size: 840px;
+$full-size: 1080px;
+
+$base-font-size: 14px;
+$base-line-height: 21px;
+$tablet-base-font-size: 16px;
+$tablet-base-line-height: 24px;
+$desktop-base-font-size: 18px;
+$desktop-base-line-height: 27px;
+
+$font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+
+// Neat Overrides
+$column: 4.833333333em;
+$gutter: 1.5em;
+$grid-columns: 12;
+$max-width: 58em;
+$visual-grid: true;
+
+// Grid
+// $susy: (
+//   columns: 12,
+//   gutters: (1/4),
+//   math: fluid,
+//   output: float,
+//   gutter-position: inside,
+// );
+$susy: (
+  container: 58em,
+  columns: 12,
+  column-width: 4.833333333em,
+  gutters: (1.5em/4.833333333em),
+  math: fluid,
+  output: float,
+  gutter-position: inside-static,
+  global-box-sizing: border-box
+);
+
+
+// Easing
+$ease-out-expo: cubic-bezier(0.190, 1.000, 0.220, 1.000);
+$ease-in-out-expo: cubic-bezier(1.000, 0.000, 0.000, 1.000);
+$ease-out-quad: cubic-bezier(0.250, 0.460, 0.450, 0.940);
+$ease-in-quad: cubic-bezier(0.550, 0.085, 0.680, 0.530);
+$ease-in-out-quad: cubic-bezier(0.455, 0.030, 0.515, 0.955);
+$ease-in-out-quint: cubic-bezier(0.860, 0.000, 0.070, 1.000);
+$ease-in-out-back: cubic-bezier(0.680, -0.550, 0.265, 1.550);
+$ease-in-out-quart: cubic-bezier(0.770, 0.000, 0.175, 1.000);
+$ease-in-cubic: cubic-bezier(0.550, 0.055, 0.675, 0.190);
+
+$tabletMin: 640px;
+$desktopMin: 820px;
+
+$tablet: 520px;
+$ipad: 620px;
+$desktop: 920px;
+
+html, body {
+  height: 100%;
+}
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}

@@ -1,0 +1,209 @@
+/*
+Buttons
+
+Styleguide 8
+*/
+
+/*
+Button Styles
+
+These are the available colours, sizes and combinations.
+
+Markup:
+<button class="red">Click</button>
+<button class="yellow">Click</button>
+<button class="green">Click</button>
+<button class="blue">Click</button>
+<button class="blue-yellow">Click</button>
+<button class="tiny">Click</button>
+<button class="small">Click</button>
+<button class="big">Click</button>
+<button class="large">Click</button>
+<button class="massive">Click</button>
+<button class="green large">Click</button>
+<button class="red big">Click</button>
+<button class="blue small">Click</button>
+<button class="yellow tiny">Click</button>
+
+Styleguide 8.1
+
+*/
+
+/*
+Button Spacing
+
+Two ways of doing a similar thing
+
+Markup:
+<button class="block">button</button>
+<div class="pady fill-grey">
+  <button class="">button</button>
+</div>
+
+Styleguide 8.2
+
+*/
+
+button, a.button {
+  border-radius: 3px;
+  @include user-select(none);
+  display: inline-block;
+  text-decoration: none;
+  margin: 0;
+  border: none;
+  cursor: pointer;
+  vertical-align: middle;
+
+  &.block {
+    display: block;
+  }
+
+  @include transition-property("background-color, background-position, color");
+  @include transition-duration(0.15s);
+  @include transition-timing-function($ease-in-out-expo);
+
+  // Icons
+  &:before, &:after {
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    line-height: 16px;
+  }
+
+  @include buttonSize();
+  @include buttonColor();
+
+  &.small {
+    @include buttonSize(16px, ($padding / 3), ($padding / 2) );
+  }
+  &.tiny {
+    @include buttonSize(14px, ($padding / 4), ($padding / 4));
+  }
+  &.big {
+    @include buttonSize(18px, ($padding / 2), ($padding / 1.5));
+  }
+  &.large {
+    @include buttonSize(21px, ($padding / 1.5), ($padding / 1.15));
+  }
+  &.massive {
+    @include buttonSize(22px, ($padding / 1.25), ($padding / 1));
+  }
+
+  &.green {
+    @include buttonColor($green);
+  }
+  &.red {
+    @include buttonColor($red);
+  }
+  &.yellow {
+    @include buttonColor($yellow, $blue);
+  }
+  &.blue {
+    @include buttonColor($blue, lighten($highlight-blue, 30));
+  }
+
+  &.blue-yellow {
+    @include buttonColor($blue, $yellow);
+  }
+
+
+
+  &.cancel {
+    //background: rgba(#fff, 0.2);
+    background: transparent;
+    color: darken($red, 10);
+    border: 1px solid $red;
+    &:before {
+      color: $red;
+    }
+
+    &:hover {
+      background: rgba(darken($red, 10), 0.1);
+      border-color: darken($red, 10);
+    }
+  }
+
+  &.fade {
+    @include buttonColor(rgba($black, 0.1), #aaa);
+
+    &:hover {
+      background-color: rgba($black, 0.15);
+      color: #777;
+    }
+  }
+
+  &.plain {
+    @include buttonColor(transparent, #333);
+  }
+
+  &.grey {
+    @include buttonColor($grey, #aaa);
+  }
+  &.stronger_grey {
+    @include buttonColor($grey, #333);
+    cursor: default;
+    &:hover {
+      background-color: $grey;
+    }
+  }
+  &[disabled=disabled] {
+    @include buttonColor($grey, #aaa, false);
+    cursor: default;
+
+    &:hover {
+      color: #aaa;
+
+      background-color: $grey;
+    }
+  }
+
+   // Loading graphic off screen
+  // background-image: url('/assets/images/button_spinner21.gif');
+  // background-repeat: no-repeat;
+  // background-position: 12px 100px;
+
+  &.btn_loading {
+    @include transition-property('');
+    @include buttonColor($blue, $yellow, false);
+    cursor: default;
+    background-position: 12px 10px;
+    padding-left: 42px;
+
+    &.large {
+      padding-left: 50px;
+      background-position: 18px 15px;
+    }
+    &.massive {
+      padding-left: 58px;
+      background-position: 24px 19px;
+    }
+    &:hover {
+      color: $yellow;
+      background-color: $blue;
+    }
+
+    &:after, &:before {
+      display: none;
+    }
+  }
+
+  &.green {
+    &.border {
+      background: transparent;
+      color: darken($green, 0);
+      border: 1px solid darken($green, 0);
+      background: #fff;
+      font-weight: 600;
+      &:before {
+        color: darken($green, 6);
+      }
+      &:hover {
+        background: $green;
+        border-color: $green;
+        color: #fff;
+      }
+    }
+  }
+
+
+}
