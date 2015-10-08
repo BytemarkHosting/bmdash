@@ -1,5 +1,7 @@
 #Bytemark Dashboards (bmdash) Glossary
 
+Because who can ever agree on terminology?
+
 _bmdash_
 The short hand name of this project! bm is a common shorthand for ByteMark.
 

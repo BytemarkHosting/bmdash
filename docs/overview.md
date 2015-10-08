@@ -15,7 +15,7 @@ the "queues" are doing, to know if we require help or have time to work on other
 proejcts. We also would like to know at a glance when urgent events are
 happening. A TV infomration screen is a good use for this. 
 
-We started off using [Dashing][6] however it became clear that this wasn't
+We started off using [Dashing][1] however it became clear that this wasn't
 a good solution when other members of the company wanted to contribute, have
 their own specifc screen with certain functionallity and when information
 screens contained more metrics then could have been shown on a single screen.
@@ -59,7 +59,7 @@ and general advice if you chose not to use them
 ## Contact
 
 If you want to get in contact about this project you can send an email to
-sherman@bytemark.co.uk or support@bytemark.co.uk, or post on the [project page][7]
+sherman@bytemark.co.uk or support@bytemark.co.uk, or post on the [project page][2]
 
-[6]: http://dashing.io/
-[7]: (TODO get project public)
+[1]: http://dashing.io/
+[2]: (TODO get project public)
