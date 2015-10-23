@@ -1,8 +1,6 @@
 BMDash.controller('Login', ['$scope', 'EventStream', 
     function($scope, stream){
 
-
-
         $scope.client = {
             name: '',
             type: ''
