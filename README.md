@@ -34,13 +34,7 @@ you need to do the following to get it started:
     vagrant@dash-dev:~$ cd /vagrant
     vagrant@dash-dev:~$ rackup -p 8080 -o 0.0.0.0 config.ru
 
-Then in your browser you can access 10.0.0.123:8080 and see your running app
-Shotgun reloads the applicaion each time a file changes, so you can start 
-hacking away!
-
-Note:
-Don't use `shotgun` or others similar for auto reloading of code. They don't
-play nicely with the threads in this app
+Then in your browser you can access 10.0.0.123:8080 to see the dev dashboard
 
 To find out more about how it all works please refer to `docs/`
 
