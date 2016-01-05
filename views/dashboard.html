@@ -1,0 +1,18 @@
+<div id="dashboard" ng-controller="Dashboard" ng-hide="!connected">
+    <div id=-selection ng-hide="selected">
+        <div ng-repeat="dashboard in dashboards">
+            <div ng-click="selectDashboard(dashboard)">
+                <ul>
+                    <li>{{ dashboard.name }}</li> 
+                    <ul> 
+                        <li>{{ dashboard.desc }}</li>
+                        <li>{{ dashboard.author }}</li>
+                    </ul>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div id="dashboard"> 
+      
+    </div>
+</div>

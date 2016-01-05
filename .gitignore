@@ -3,6 +3,6 @@ Gemfile.lock
 *.swo
 tmp/*
 data/*
-.vagrant/
+.vagrant
 .DS_Store
 public/assets/manifest.json

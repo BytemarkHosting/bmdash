@@ -17,12 +17,12 @@ TODO:: Write software, then write about how to use it
 
 ## Development And Hacking
 
-_Note:: Only tested on OSX_
-
 For some ease, [Vagrant][0], [VirtualBox][1] and [Ansible][2] are used to make a
 development envrioment you can use with almost minimal effort. You will also 
-need to install the [Oracle VM VirtualBox Extension Pack][3]. Once you have 
-installed all of these, in the cloned git project run:
+need to install the [Oracle VM VirtualBox Extension Pack][3] (or really you
+could not setup USB devies on the VM, your call).
+
+Once you have installed all of these, in the cloned git project run:
 
     $ vagrant up
 
@@ -41,7 +41,7 @@ To find out more about how it all works please refer to `docs/`
 ## Contact 
 
 Sherman - He will be hiding under the table
-paul.rose@bytemark.co.uk
+sherman@bytemark.co.uk
 
 [0]: https://docs.vagrantup.com/v2/why-vagrant/index.html 
 [1]: https://www.virtualbox.org/

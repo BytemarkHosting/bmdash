@@ -11,7 +11,7 @@ BMDash.service('EventStream', ['$q', '$interval', function($q, $interval){
             this.stream = this.deferred.promise;
         }
 
-        this.is_closed = function(){
+        this.is_connected= function(){
             if (typeof this.stream == "EventSource"){
                 return (this.stream.readyState == 2) ? true : false
             }
@@ -60,5 +60,6 @@ BMDash.service('EventStream', ['$q', '$interval', function($q, $interval){
                 stream: stream, 
                 EventStream: this
             });
+            return this.stream
         }
 }]);

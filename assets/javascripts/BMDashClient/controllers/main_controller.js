@@ -1,4 +1,6 @@
-BMDash.controller('Main', ["$scope", "$interval", "EventStream", function($scope, $interval, EventStream){
+BMDash.controller('Main', ["$scope", "$interval", "$controller", "EventStream",
+        "WidgetService",
+        function($scope, $interval, $controller, EventStream, widgetService){
 
     $scope.connected = false;
 
@@ -14,11 +16,13 @@ BMDash.controller('Main', ["$scope", "$interval", "EventStream", function($scope
     $scope.connection_watch = $scope.$watch('connected', connection_change);
 
     $scope.setup = function(){
-        console.log('SETUP', 'Started')
+        console.log('SETUP', 'Started');
+        widgetService.update();
     }
 
     $scope.teardown = function(){
         console.log('TEARDOWN', 'Started')
     }
+
    
 }])

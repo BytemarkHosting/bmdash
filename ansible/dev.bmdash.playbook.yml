@@ -28,5 +28,4 @@
     - name: Install Gems
       shell: bundle
              chdir=/vagrant
-             creates=/vagrant/Gemfile.lock
      
