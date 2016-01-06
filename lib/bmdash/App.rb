@@ -20,7 +20,7 @@ module BMDash
             self.logger.info 'Loading Dashboards:'
             Dir.foreach('dashboards') do |dir|
                 next if dir[0] == '.'
-                next unless dir.match /\.yml$/
+                next unless dir.match(/\.yml$/)
                 self.logger.info "    - Trying #{dir}"
                 dashboard_path = File.join Dir.pwd, 'dashboards', dir
                 dashboard = YAML::load_file dashboard_path 
@@ -179,7 +179,7 @@ module BMDash
             asset_types.each do |path|
                settings.assets.append_path("./assets/#{path}")
             end
-            manifest = Sprockets::Manifest.new(assets, './assets/manifest.json').save
+            #manifest = Sprockets::Manifest.new(assets, './assets/manifest.json').save
 
             # Load widgets from ./widgets
             load_widgets
@@ -208,7 +208,7 @@ module BMDash
             end
 
             # Setup file watching
-            watcher_thread = Thread.new(watcher) do |watcher|
+            self.watcher_thread = Thread.new(watcher) do |watcher|
                 watcher.watch do |filename, event|
                     self.file_changed filename, event
                 end
