@@ -12,7 +12,7 @@ BMDash.service('WidgetService', ['$q','$interval', '$http',
                 function(response){
                     this.lastUpdate = Date.now();
                     deferred.resolve(response.data);
-                    console.log('WIDGET SERVICE: Got widget data);
+                    console.log('WIDGET SERVICE: Got widget data');
                 }, 
                 function(response){
                     deferred.reject(null);
