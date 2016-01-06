@@ -12,21 +12,21 @@ BMDash.controller('Dashboard',
     // The current loaded dashboard
     $scope.selected = null;
 
-    // Get The list of dashboards from the server
-    dashboardData.then(function(data){
-        $scope.dashboards = data.dashboards
-    });
 
     // Watch for changes in the selected dashboard and initalise 
     $scope.$watch('selected', function(newValue, oldValue){
-        teardown();
-        setup();
+        if (oldValue != null) {
+            teardown();
+            $scope.selected = newValue;
+            setup();
+        }
     });
 
     // Sets the selected dashboard, this can be triggerd from a view or
     // a controller
     $scope.selectDashboard = function(dashboard){
         $scope.selected = dashboard;
+        console.log("DASHBOARD: '" + dashboard + "' selected");
     }
 
     // Start logic for the Dashboard controller
@@ -35,31 +35,36 @@ BMDash.controller('Dashboard',
     // broadcasted and the user is left to select from the available dashboards
 
     init = function(){
-        if (dashboard.length > 0){
-            $.grep($scope.dashboards, function(dashboard){
-                console.log(dashboard)
-                if (dashboard.name == clientDashboard){
-                    $scope.selectDashboard(clientDashboard);
-                }
-            });
-        } else {
-            //TODO Error boradcast needed here
-        }
+        // Get The list of dashboards from the server
+        dashboardData.then(function(data){
+            $scope.dashboards = data.dashboards
+            console.log('DASHBOARD: Loaded dashboard data from server')
+            // Select dashboard automatically if one was provided
+            if (clientDashboard.length > 0){
+                $.grep($scope.dashboards, function(dashboard){
+                    if (dashboard.name == clientDashboard){
+                        $scope.selectDashboard(clientDashboard);
+                        $scope.setup();
+                    }
+                });
+            } else {
+                //TODO Error boradcast needed here
+            }
+        });
     }
 
 
-    $scope.$on('getDashboards', init);
+    $scope.$on('ClientConnected', init);
 
-
-    
-    setup = function(){
+    var setup = function(){
+        console.log('DASHBOARD: Setup called!')
         //  Make new widgets 
             
     }
 
-    teardown = function(){
+    var teardown = function(){
+        console.log('DASHBOARD: Teardown called!')
         
     }
-
 
 }]);

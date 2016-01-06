@@ -1,8 +1,8 @@
 <div id='login' ng-controller="Login" ng-show="!connected">
     <form>
-        <label>Dashboard Name</label>
-        <input type="text" placeholder="Name this screen!" ng-model="client.name" value="saki"/>
-        <input type="text" placeholder="What group is this screen in" ng-model="client.group" value="testing" />
-        <input type="button" value="Get Dashboards" ng-click="get_dashboards(client)" autofocus />
+        <label>Client Information</label>
+        <input type="text" placeholder="Name this screen!" ng-model="client.name" value="Client Name"/>
+        <input type="text" placeholder="What group is this screen in" ng-model="client.group" value="Client Group" />
+        <input type="button" value="Connect" ng-click="connect(client)" autofocus />
     </form>
 </div>

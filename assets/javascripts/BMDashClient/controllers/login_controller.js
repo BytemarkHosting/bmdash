@@ -2,17 +2,20 @@ BMDash.controller('Login',
     ['$scope', '$rootScope', 'EventStream', 'ClientName', 'ClientGroup',
     function($scope, $rootScope, stream, client, group){
 
+        $scope.connected = false;
+
         $scope.client = {
             name: client,
             group: group
         }
 
-        $scope.get_dashboards = function(client){
-            console.log ('Client ' + client.name + ' in ' + client.group + ' asked for dashboards!')
+        $scope.connect = function(client){
+            console.log('LOGIN: Creating connection for ' + client.name)
             stream.connect(client.name, client.group)
             .then(function(){
-                console.log("Event stream connected!");
-                $rootScope.$broadcast('getDashboards')
+                console.log("LOGIN: Connection Succesful!");
+                $scope.connected = true;
+                $rootScope.$broadcast('ClientConnected')
             });
         };
 
@@ -20,11 +23,10 @@ BMDash.controller('Login',
         // If there is then run get_dashboards without user action
         var init = function() {
              if (client.length > 0 && group.length > 0){
-                $scope.get_dashboards($scope.client);
+                $scope.connect($scope.client);
              }
         }
         init();
-
 
     }
 ]);
