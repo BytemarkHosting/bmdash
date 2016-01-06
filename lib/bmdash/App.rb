@@ -329,12 +329,20 @@ module BMDash
         end
 
         get '/' do 
+            # check if requestor has supplied a client name and group and 
+            # assign if needed
+            
+            @client = (params[:client]) ? params[:client] : nil
+            @group = (params[:group]) ? params[:group] : nil
+            @dashboard = (params[:dashboard]) ? params[:dashboard] : nil
+
             # Assume any logic to bless clients goes here
             # We don't have any like that atm though so just return a valid
             # token 
             @token = new_token
             erb :index
         end
+
 
     end
 end

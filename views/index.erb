@@ -22,7 +22,10 @@
     
     <script src="/assets/application.js?token=<%= @token %>"></script>
     <script type="text/javascript">
-        BMDash.value('token' , '<%= @token %>');
+        BMDash.value('token' , "<%= @token %>");
+        BMDash.value('client', '<%= (@client) ? @client : "" %>');
+        BMDash.value('group', '<%= (@group) ? @group : "" %>');
+        BMDash.value('dashboard', '<%= (@dashboard) ? @dashboard : "" %>');
         var token = '<%= @token %>';
     </script>
   </body>
