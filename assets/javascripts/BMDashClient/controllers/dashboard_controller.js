@@ -1,6 +1,6 @@
 BMDash.controller('Dashboard', 
-    ['$scope', 'DashboardData', 'WidgetService', 'ClientDashboard',
-    function($scope, dashboardData, widgetService, clientDashboard){
+    ['$scope', 'DashboardService', 'WidgetService', 'ClientDashboard',
+    function($scope, dashboardService, widgetService, clientDashboard){
 
     // Dashboard Controller is responsible for the creation and management of a
     // dashboard and all of it's widgets.
@@ -36,7 +36,7 @@ BMDash.controller('Dashboard',
 
     init = function(){
         // Get The list of dashboards from the server
-        dashboardData.then(function(data){
+        dashboardService.getAvailableDashboards().then(function(data){
             $scope.dashboards = data.dashboards
             console.log('DASHBOARD: Loaded dashboard data from server')
             // Select dashboard automatically if one was provided

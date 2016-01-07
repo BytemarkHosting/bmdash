@@ -44,7 +44,7 @@ BMDash.service('EventStream', ['$q', '$interval', function($q, $interval){
                 }
                 stream.addEventListener('ping', function(event){
                     data = JSON.parse(event.data);
-                    console.log('PING: recieved Ping from the server. Sent at ' + data.time);
+                    console.log('PING:' +  data.time);
                 });
                 $interval.cancel(args.EventStream.watcher);
                 deferred.resolve(stream);
