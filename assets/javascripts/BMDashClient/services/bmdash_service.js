@@ -1,7 +1,7 @@
 use strict;
 
 // BMDash service is used to communicate with a BMDash server
-BMDash.service('BMDash', ['$q', '$interval', function($q, $interval){
+BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
 
     // Client details
     client_name = null;
