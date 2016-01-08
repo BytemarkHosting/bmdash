@@ -1,24 +1,23 @@
-use strict;
 
 // BMDash service is used to communicate with a BMDash server
 BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
 
     // Client details
-    client_name = null;
-    group_name = null;
+    this.client_name = null;
+    this.group_name = null;
 
     // Service objects
-    eventStream = {};
+    this.eventStream = {};
 
     // Functions
-    init = function(){
+    this.init = function(){
         // Setup the eventStream object and promise 
-        eventStream.deferred = $q.defer();
-        eventStream.stream = eventStream.deferred.promise;
+        this.eventStream.deferred = $q.defer();
+        this.eventStream.stream = this.eventStream.deferred.promise;
 
     }
     
-    connect = function(client_name, client_group){
+    this.connect = function(client_name, client_group){
         // Assign user details
         this.client_name = client_name;
         this.client_group = client_group;
@@ -26,11 +25,10 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
         // Set up EventSource and connection checker
         this.eventStream.connection = new EventSource('/events?name='+client_name+'&group='+client_group);
         this.eventStream.watcher = $interval(check_connection_state, 500, 
-
-            null, null, { this.eventStream });
+            null, null, this.eventStream);
     }
 
-    reset = function(){
+    this.reset = function(){
         // Clean any user data out
         this.client_name = null;
         this.client_group = null;
@@ -39,7 +37,7 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
         init();
     }
 
-    isConnected = function(){
+    this.isConnected = function(){
         if (typeof this.eventStream.stream == "EventSource"){
             return (this.eventStream.stream.readyState == 2) ? true : false;
         }
@@ -81,4 +79,9 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
             deferred.resolve(connection);
         }
     }
-}
+
+    // Getters for convience!
+    this.getEventStream = function(){
+        return this.eventStream.stream;
+    }
+}]);
