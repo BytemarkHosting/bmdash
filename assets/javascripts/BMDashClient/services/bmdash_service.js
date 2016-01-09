@@ -19,6 +19,7 @@ BMDash.service('BMDashService',
     // Public Functions
     
     this.init = function(){
+        log('initialising...');
         // Setup the eventStream object and promise 
         this.eventStream = {};
         this.eventStream.deferred = $q.defer();
@@ -28,6 +29,7 @@ BMDash.service('BMDashService',
         this.dashboards.deferred = $q.defer();
         this.dashboards.available = this.dashboards.deferred.promise;
         this.dashboards.lastUpdate = Date.now();
+        log('ready');
 }
     
     this.connect = function(client_name, client_group){
