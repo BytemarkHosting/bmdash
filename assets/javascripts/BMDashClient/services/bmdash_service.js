@@ -53,9 +53,7 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
     }
 
     this.isConnected = function(){
-        if (typeof this.eventStream.stream == "EventSource"){
-            return (this.eventStream.stream.readyState == 2) ? true : false;
-        }
+        return this.connected;
     }
 
     // Private Functions
