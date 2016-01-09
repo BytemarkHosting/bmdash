@@ -1,7 +1,7 @@
 // BMDash service is used to communicate with a BMDash server
 BMDash.service('BMDashService', 
-    ['$q', '$interval', '$http',
-    function($q, $interval, $http){
+    ['$q', '$interval', '$http', '$rootScope',
+    function($q, $interval, $http, $rootScope){
 
 
     // Variables
@@ -55,6 +55,8 @@ BMDash.service('BMDashService',
             }
         );
         
+        // Broadcast that we are done connecting
+        $rootScope.$broadcast('ClientConnected');
     }
 
     this.disconnect = function(){
