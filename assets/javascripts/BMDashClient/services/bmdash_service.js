@@ -2,16 +2,23 @@
 // BMDash service is used to communicate with a BMDash server
 BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
 
+
+    // Variables
+    connected = false; 
+
     // Client details
-    this.client_name = null;
-    this.group_name = null;
+    client_name = null;
+    group_name = null;
 
     // Service objects
-    this.eventStream = {};
+    eventStream = {};
 
     // Functions
+    // Public Functions
+    
     this.init = function(){
         // Setup the eventStream object and promise 
+        this.eventStream = {};
         this.eventStream.deferred = $q.defer();
         this.eventStream.stream = this.eventStream.deferred.promise;
 
@@ -28,11 +35,19 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
             null, null, this.eventStream);
     }
 
+    this.disconnect = function(){
+        // Close the EventStream
+        this.eventStream.stream.close();
+        this.connected = false;
+    }
+
+
     this.reset = function(){
+        // Disconnect cleanly
+        disconnect();
         // Clean any user data out
         this.client_name = null;
         this.client_group = null;
-
         // Reinit the service objects
         init();
     }
@@ -43,6 +58,8 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
         }
     }
 
+    // Private Functions
+    
     // Checks the state of the EventSource in the passed eventStream object and
     // updates the promise accordingly. If stream becomes connected it also
     // cancels the watcher that calls this method and resolves the promise
@@ -77,6 +94,7 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
             });
             $interval.cancel(eventstream.watcher);
             deferred.resolve(connection);
+            this.connected = true;
         }
     }
 
