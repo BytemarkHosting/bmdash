@@ -74,31 +74,38 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
         }
         // Stream connection failed
         if (connection.readyState == 2){
-            console.log('EVENTSTREAM: Stream connection failed');
+            log('Stream connection failed');
             deferred.reject(null);
         }
         // Stream connected!
         if (connection.readyState == 1){
-            console.log('EVENTSTREAM: Stream connected!');
+            log(' Stream connected!');
             stream.onmessage = function(event){
-                console.log('EVENTSTREAM: Received a unamed event!');
-                console.log(event);
+                log('Received a unamed event!');
+                log(event);
             }
             stream.onerror = function(event){
-                console.log('EVENTSTREAM: We hit an error boss! Closing the Stream!');
+                log(' We hit an error boss! Closing the Stream!');
                 stream.close();
             }
             stream.addEventListener('ping', function(event){
                 data = JSON.parse(event.data);
-                console.log('PING:' +  data.time);
+                log('PING:' +  data.time);
             });
             $interval.cancel(eventstream.watcher);
             deferred.resolve(connection);
             this.connected = true;
         }
     }
+    
+    // Helpers  
+    log = function(message){
+        console.log('BMDashService', message);
+    }
 
-    // Getters for convience!
+    
+
+    // Getters + setters
     this.getEventStream = function(){
         return this.eventStream.stream;
     }
