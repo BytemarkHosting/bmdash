@@ -1,6 +1,7 @@
-
 // BMDash service is used to communicate with a BMDash server
-BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
+BMDash.service('BMDashService', 
+    ['$q', '$interval', '$http',
+    function($q, $interval, $http){
 
 
     // Variables
@@ -12,6 +13,7 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
 
     // Service objects
     eventStream = {};
+    dashboards = {};
 
     // Functions
     // Public Functions
@@ -21,8 +23,12 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
         this.eventStream = {};
         this.eventStream.deferred = $q.defer();
         this.eventStream.stream = this.eventStream.deferred.promise;
-
-    }
+        // Setup Dashboards object
+        this.dashboards = {};
+        this.dashboards.deferred = $q.defer();
+        this.dashboards.available = this.dashboards.deferred.promise;
+        this.dashboards.lastUpdate = Date.now();
+}
     
     this.connect = function(client_name, client_group){
         // Assign user details
@@ -33,6 +39,22 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
         this.eventStream.connection = new EventSource('/events?name='+client_name+'&group='+client_group);
         this.eventStream.watcher = $interval(check_connection_state, 500, 
             null, null, this.eventStream);
+
+        // Get Dashboard list
+        $http.get('/dashboards').then(
+            // Success
+            function(response){
+                this.dashboards.lastUpdate = Date.now();
+                this.dashboards.deferred.resolve(response.data);
+                log('Received Dashboard Data');
+            },
+            // Fail
+            function(response){
+                deferred.reject({});
+                log('Failed to get Dashboard Data', response);
+            }
+        );
+        
     }
 
     this.disconnect = function(){
@@ -107,4 +129,9 @@ BMDash.service('BMDashService', ['$q', '$interval', function($q, $interval){
     this.getEventStream = function(){
         return this.eventStream.stream;
     }
+
+    this.getDashboards = function(){
+        return this.dashboards.available;
+    }
+
 }]);
