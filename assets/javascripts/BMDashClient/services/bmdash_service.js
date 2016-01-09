@@ -90,7 +90,7 @@ BMDash.service('BMDashService',
 
         // Stream state connecting  
         if (connection.readyState == 0){
-            deferred.notify('Trying connection to ' + stream.url);
+            deferred.notify('Trying connection to ' + connection.url);
         }
         // Stream connection failed
         if (connection.readyState == 2){
@@ -100,19 +100,19 @@ BMDash.service('BMDashService',
         // Stream connected!
         if (connection.readyState == 1){
             log(' Stream connected!');
-            stream.onmessage = function(event){
+            connection.onmessage = function(event){
                 log('Received a unamed event!');
                 log(event);
             }
-            stream.onerror = function(event){
-                log(' We hit an error boss! Closing the Stream!');
-                stream.close();
+            connection.onerror = function(event){
+                log('We hit an error boss! Closing the Stream!');
+                connection.close();
             }
-            stream.addEventListener('ping', function(event){
+            connection.addEventListener('ping', function(event){
                 data = JSON.parse(event.data);
                 log('PING:' +  data.time);
             });
-            $interval.cancel(eventstream.watcher);
+            $interval.cancel(eventStream.watcher);
             deferred.resolve(connection);
             this.connected = true;
         }
@@ -122,8 +122,6 @@ BMDash.service('BMDashService',
     log = function(message){
         console.log('BMDashService', message);
     }
-
-    
 
     // Getters + setters
     this.getEventStream = function(){
