@@ -43,11 +43,12 @@ BMDash.service('BMDashService',
             null, null, this.eventStream);
 
         // Get Dashboard list
+        var dashboards = this.dashboards; // Promise scoping sucks
         $http.get('/dashboards').then(
             // Success
             function(response){
-                this.dashboards.lastUpdate = Date.now();
-                this.dashboards.deferred.resolve(response.data);
+                dashboards.lastUpdate = Date.now();
+                dashboards.deferred.resolve(response.data);
                 log('Received Dashboard Data');
             },
             // Fail
