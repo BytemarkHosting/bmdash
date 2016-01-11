@@ -149,5 +149,9 @@ BMDash.service('BMDashService',
         return this.dashboards.available;
     }
 
+    this.getWidgets = function(){
+        return this.widgets.available;
+    }
+
 
 }]);
