@@ -73,7 +73,7 @@ BMDash.service('BMDashService',
 
         // Set up EventSource and connection checker
         this.eventStream.connection = new EventSource('/events?name='+client_name+'&group='+client_group);
-        this.eventStream.watcher = $interval(this.check_connection_state, 500, 
+        this.eventStream.watcher = $interval(this.checkEventStream, 500, 
             null, null, this.eventStream);
 
         this.getData();
@@ -108,7 +108,7 @@ BMDash.service('BMDashService',
     // updates the promise accordingly. If stream becomes connected it also
     // cancels the watcher that calls this method and resolves the promise
     // object to the resulting EventSource
-    this.check_connection_state = function(eventStream){
+    this.checkEventStream = function(eventStream){
         var connection = eventStream.connection;
         var deferred = eventStream.deferred;
 
