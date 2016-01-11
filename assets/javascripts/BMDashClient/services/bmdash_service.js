@@ -1,36 +1,70 @@
 // BMDash service is used to communicate with a BMDash server
 BMDash.service('BMDashService', 
-    ['$q', '$interval', '$http', '$rootScope',
-    function($q, $interval, $http, $rootScope){
+    ['$q', '$interval', '$http', '$rootScope', '$log',
+    function($q, $interval, $http, $rootScope, $log){
 
 
     // Variables
-    connected = false; 
+    this.connected = false; 
 
     // Client details
-    client_name = null;
-    group_name = null;
+    this.client_name = null;
+    this.group_name = null;
 
     // Service objects
-    eventStream = {};
-    dashboards = {};
+    this.eventStream = {};
+    this.bmdashEndPoints = [];
+    this.bmdashData = {};
 
     // Functions
     // Public Functions
     
     this.init = function(){
-        log('initialising...');
+        $log.debug('BMDashService: initialising...');
+        // Set endpoints
+        this.bmdashEndPoints = ['dashboards', 'widgets'];
         // Setup the eventStream object and promise 
         this.eventStream = {};
         this.eventStream.deferred = $q.defer();
         this.eventStream.stream = this.eventStream.deferred.promise;
-        // Setup Dashboards object
-        this.dashboards = {};
-        this.dashboards.deferred = $q.defer();
-        this.dashboards.available = this.dashboards.deferred.promise;
-        this.dashboards.lastUpdate = Date.now();
-        log('ready');
-}
+        // Setup Endpoints
+        for(var i=0; i<this.bmdashEndPoints.length; i++){
+           var point = this.bmdashEndPoints[i];
+           this.bmdashData[point] = {};
+           this.bmdashData[point].endPoint = '/' + point ;
+           this.bmdashData[point].deferred = $q.defer();
+           this.bmdashData[point].available = this.bmdashData[point].deferred.promise;
+           this.bmdashData[point].lastUpdate = Date.now();
+        }
+        $log.debug('BMDashService: ready');
+    }
+    
+    this.getData = function(){
+        // Get data from endpoints
+        for(var i=0; i<this.bmdashEndPoints.length; i++){
+            var point = this.bmdashData[this.bmdashEndPoints[i]];
+
+            var responder = function(point){
+                return function (response){
+                    $log.debug('BMDashService: Received ' + point.endPoint + ' Data');
+                    point.lastUpdate = Date.now();
+                    point.deferred.resolve(response.data);
+                }
+            }
+
+            $http.get(point.endPoint).then(responder(point),
+                // Fail
+                function(response){
+                    $log.debug('BMDashService: Failed to get ' + point.endPoint + ' Data', response);
+                    point.deferred.reject({});
+                }
+            );
+        }
+            
+        // Broadcast that we are done connecting
+        $rootScope.$broadcast('ClientConnected');
+
+    }
     
     this.connect = function(client_name, client_group){
         // Assign user details
@@ -39,25 +73,10 @@ BMDash.service('BMDashService',
 
         // Set up EventSource and connection checker
         this.eventStream.connection = new EventSource('/events?name='+client_name+'&group='+client_group);
-        this.eventStream.watcher = $interval(check_connection_state, 500, 
+        this.eventStream.watcher = $interval(this.check_connection_state, 500, 
             null, null, this.eventStream);
 
-        // Get Dashboard list
-        var dashboards = this.dashboards; // Promise scoping sucks
-        $http.get('/dashboards').then(
-            // Success
-            function(response){
-                dashboards.lastUpdate = Date.now();
-                dashboards.deferred.resolve(response.data);
-                log('Received Dashboard Data');
-            },
-            // Fail
-            function(response){
-                deferred.reject({});
-                log('Failed to get Dashboard Data', response);
-            }
-        );
-        
+        this.getData();
         // Broadcast that we are done connecting
         $rootScope.$broadcast('ClientConnected');
     }
@@ -71,12 +90,12 @@ BMDash.service('BMDashService',
 
     this.reset = function(){
         // Disconnect cleanly
-        disconnect();
+        this.disconnect();
         // Clean any user data out
         this.client_name = null;
         this.client_group = null;
         // Reinit the service objects
-        init();
+        this.init();
     }
 
     this.isConnected = function(){
@@ -89,7 +108,7 @@ BMDash.service('BMDashService',
     // updates the promise accordingly. If stream becomes connected it also
     // cancels the watcher that calls this method and resolves the promise
     // object to the resulting EventSource
-    check_connection_state = function(eventStream){
+    this.check_connection_state = function(eventStream){
         var connection = eventStream.connection;
         var deferred = eventStream.deferred;
 
@@ -99,35 +118,28 @@ BMDash.service('BMDashService',
         }
         // Stream connection failed
         if (connection.readyState == 2){
-            log('Stream connection failed');
+            $log.debug('BMDashService: Stream connection failed');
             deferred.reject(null);
         }
         // Stream connected!
         if (connection.readyState == 1){
-            log(' Stream connected!');
+            $log.debug('BMDashService:  Stream connected!');
             connection.onmessage = function(event){
-                log('Received a unamed event!');
-                log(event);
+                $log.debug('BMDashService: Received a unamed event!');
+                $log.debug(event);
             }
             connection.onerror = function(event){
-                log('We hit an error boss! Closing the Stream!');
+                $log.debug('BMDashService: We hit an error boss! Closing the Stream!', event);
                 connection.close();
             }
             connection.addEventListener('ping', function(event){
                 data = JSON.parse(event.data);
-                log('PING:' +  data.time);
+                $log.debug('BMDashService: PING:' +  data.time);
             });
             $interval.cancel(eventStream.watcher);
             deferred.resolve(connection);
-            this.connected = true;
         }
     }
-    
-    // Helpers  
-    log = function(message){
-        console.log('BMDashService', message);
-    }
-
     // Getters + setters
     this.getEventStream = function(){
         return this.eventStream.stream;
@@ -136,5 +148,6 @@ BMDash.service('BMDashService',
     this.getDashboards = function(){
         return this.dashboards.available;
     }
+
 
 }]);
