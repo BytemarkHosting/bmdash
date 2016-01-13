@@ -9,8 +9,8 @@ BMDash.controller('Main',
     $scope.setup = function(){
         console.log('MAIN', 'Setup called');
         bmDashService.init();
-        dashboardService.update();
-        widgetService.update();
+//        dashboardService.update();
+//        widgetService.update();
 
         // Change connection status Depending on EventStream state
         bmDashService.getEventStream().then(function(obj){
