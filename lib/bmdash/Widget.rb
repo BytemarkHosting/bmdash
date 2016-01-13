@@ -18,6 +18,7 @@ module BMDash
             
             # Check the HTML exists
             html_path = File.join info['path'], "#{info['name']}.html"
+            html_path.downcase
             # At least a HTML file is reuiqred here
             if ! File.exists? html_path
                 raise BMDashError, "Widget HTML file #{html_path} does not exist!"
@@ -26,6 +27,7 @@ module BMDash
 
             # Load the script if there is on
             script_path = File.join info['path'], "#{info['name']}.rb"
+            script_path.downcase!
             if File.exists? script_path
                 @script = Script.load(script_path) do |script|
                     script.__send__(:attr_accessor, 'scheduler', 'logger', 'events');
