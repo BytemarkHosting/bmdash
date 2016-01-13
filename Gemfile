@@ -10,3 +10,9 @@ source "https://rubygems.org"
  gem "shotgun"
  gem "sass"
  gem "rufus-scheduler"
+ 
+group :test do
+     gem "cucumber"
+     gem "capybara"
+     gem "capybara-webkit"
+end
