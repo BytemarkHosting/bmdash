@@ -83,12 +83,23 @@ BMDash.service('BMDashService',
                 }
             );
         }
-            
-        // Broadcast that we are done connecting
-        $rootScope.$broadcast('ClientConnected');
-
     }
-    
+
+    // Check the status of the event stream and data end points and 
+    this.checkStatus = function(){
+        // Status vars
+        var eventsConnected = false;
+        var endpointsFetched = false;
+
+        // Check eventStream is connected:
+        eventsConnected = (this.evenStream.stream.readyState == 1) ? true: false;
+        this.endpoints.forEach(function()){
+
+        }
+
+        this.connected = (eventsConnected && endpointsFetched);
+    }
+
     this.connect = function(client_name, client_group){
         // Assign user details
         this.client_name = client_name;
