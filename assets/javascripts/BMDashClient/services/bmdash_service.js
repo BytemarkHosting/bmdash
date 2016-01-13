@@ -3,9 +3,7 @@ BMDash.service('BMDashService',
     ['$q', '$interval', '$http', '$rootScope', '$log',
     function($q, $interval, $http, $rootScope, $log){
 
-
-    // Variables
-    this.connected = false; 
+    // Variables //
 
     // Client details
     this.client_name = null;
@@ -16,8 +14,14 @@ BMDash.service('BMDashService',
     this.bmdashEndPoints = [];
     this.bmdashData = {};
 
-    // Functions
-    // Public Functions
+    // Service State
+    this.connectionState = {};
+    this.lastUpdateRun = 0;
+    this.lastUpdateTimout = 5 
+    this.connectionCheckWatcher = null;
+
+    // Functions //
+    // Public Functions //
     
     this.init = function(){
         $log.debug('BMDashService: initialising...');
@@ -27,6 +31,23 @@ BMDash.service('BMDashService',
         this.eventStream = {};
         this.eventStream.deferred = $q.defer();
         this.eventStream.stream = this.eventStream.deferred.promise;
+        this.eventStream.connected = false;
+
+        this.eventStream.stream.then(function(stream){
+            stream.onmessage = function(event){
+                $log.debug('BMDashService: Received a unamed event!');
+                $log.debug(event);
+            }
+            stream.onerror = function(event){
+                $log.debug('BMDashService: We hit an error boss! Closing the Stream!', event);
+                connection.close();
+            }
+            stream.addEventListener('ping', function(event){
+                data = JSON.parse(event.data);
+                $log.debug('BMDashService: PING:' +  data.time);
+            });
+        });
+
         // Setup Endpoints
         for(var i=0; i<this.bmdashEndPoints.length; i++){
            var point = this.bmdashEndPoints[i];
@@ -40,10 +61,13 @@ BMDash.service('BMDashService',
     }
     
     this.getData = function(){
+        this.update = Date.now();
         // Get data from endpoints
         for(var i=0; i<this.bmdashEndPoints.length; i++){
             var point = this.bmdashData[this.bmdashEndPoints[i]];
-
+            // This closure wraps around the success function for the http get 
+            // used when getting data from the server, it allows acecss to the 
+            // point object
             var responder = function(point){
                 return function (response){
                     $log.debug('BMDashService: Received ' + point.endPoint + ' Data');
@@ -51,7 +75,6 @@ BMDash.service('BMDashService',
                     point.deferred.resolve(response.data);
                 }
             }
-
             $http.get(point.endPoint).then(responder(point),
                 // Fail
                 function(response){
@@ -77,6 +100,7 @@ BMDash.service('BMDashService',
             null, null, this.eventStream);
 
         this.getData();
+
         // Broadcast that we are done connecting
         $rootScope.$broadcast('ClientConnected');
     }
@@ -86,7 +110,6 @@ BMDash.service('BMDashService',
         this.eventStream.stream.close();
         this.connected = false;
     }
-
 
     this.reset = function(){
         // Disconnect cleanly
@@ -102,7 +125,7 @@ BMDash.service('BMDashService',
         return this.connected;
     }
 
-    // Private Functions
+    // Private Functions //
     
     // Checks the state of the EventSource in the passed eventStream object and
     // updates the promise accordingly. If stream becomes connected it also
@@ -120,27 +143,18 @@ BMDash.service('BMDashService',
         if (connection.readyState == 2){
             $log.debug('BMDashService: Stream connection failed');
             deferred.reject(null);
+            eventStream.connected = false;
         }
         // Stream connected!
         if (connection.readyState == 1){
             $log.debug('BMDashService:  Stream connected!');
-            connection.onmessage = function(event){
-                $log.debug('BMDashService: Received a unamed event!');
-                $log.debug(event);
-            }
-            connection.onerror = function(event){
-                $log.debug('BMDashService: We hit an error boss! Closing the Stream!', event);
-                connection.close();
-            }
-            connection.addEventListener('ping', function(event){
-                data = JSON.parse(event.data);
-                $log.debug('BMDashService: PING:' +  data.time);
-            });
             $interval.cancel(eventStream.watcher);
             deferred.resolve(connection);
+            eventStream.connected = true;
         }
     }
-    // Getters + setters
+
+    // Getters + Setters //
     this.getEventStream = function(){
         return this.eventStream.stream;
     }
