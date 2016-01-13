@@ -17,8 +17,8 @@ module BMDash
             end
             
             # Check the HTML exists
-            html_path = File.join info['path'], "#{info['name']}.html"
-            html_path.downcase
+            html_path = File.join info['path'], "#{info['dir']}.html"
+            html_path.downcase!
             # At least a HTML file is reuiqred here
             if ! File.exists? html_path
                 raise BMDashError, "Widget HTML file #{html_path} does not exist!"

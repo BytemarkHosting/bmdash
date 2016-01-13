@@ -50,11 +50,11 @@ module BMDash
                 next if dir[0] == '.'
                 self.logger.info "    - Trying #{dir}"
                 widget_dir = File.join Dir.pwd, 'widgets',  dir
-                
                 begin
                     # Attempt to create widget
                     widget_info = YAML::load_file(File.join widget_dir, 'about.yml')
                     widget_info['path'] = widget_dir
+                    widget_info['dir'] = dir
                     widgets[widget_info['name']] = Widget.new(widget_info)
                     # Add it's assets to Sprockets
                     asset_paths = []
