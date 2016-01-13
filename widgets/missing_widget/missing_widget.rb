@@ -14,6 +14,6 @@ def some_method
 end
 
 @scheduler.every '10s' do 
-    logger.info "test_widget has made an event" 
+    logger.info "Missing Widget repoting in!" 
     some_method
 end

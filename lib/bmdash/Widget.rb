@@ -23,10 +23,9 @@ module BMDash
             if ! File.exists? html_path
                 raise BMDashError, "Widget HTML file #{html_path} does not exist!"
             end
-            @html = "widgets/#{info['name']}.html"
-
+            @html = html_path
             # Load the script if there is on
-            script_path = File.join info['path'], "#{info['name']}.rb"
+            script_path = File.join info['path'], "#{info['dir']}.rb"
             script_path.downcase!
             if File.exists? script_path
                 @script = Script.load(script_path) do |script|
