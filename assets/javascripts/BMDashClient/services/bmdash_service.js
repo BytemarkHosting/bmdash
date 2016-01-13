@@ -93,9 +93,9 @@ BMDash.service('BMDashService',
 
         // Check eventStream is connected:
         eventsConnected = (this.evenStream.stream.readyState == 1) ? true: false;
-        this.endpoints.forEach(function()){
+        this.endpoints.forEach(function(){
 
-        }
+        });
 
         this.connected = (eventsConnected && endpointsFetched);
     }
