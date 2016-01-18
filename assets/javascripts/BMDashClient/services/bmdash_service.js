@@ -151,8 +151,8 @@ BMDash.service('BMDashService',
                 });
             }
         }
-        this.eventStream.stream.then(streamConnected(this));
 
+        this.eventStream.stream.then(streamConnected(this));
 
         this.getData();
 
@@ -178,6 +178,19 @@ BMDash.service('BMDashService',
 
     this.isConnected = function(){
         return this.connected;
+    }
+
+    // Getters + Setters //
+    this.getEventStream = function(){
+        return this.eventStream.stream;
+    }
+
+    this.getDashboards = function(){
+        return this.dashboards.available;
+    }
+
+    this.getWidgets = function(){
+        return this.widgets.available;
     }
 
     // Private Functions //
@@ -207,19 +220,5 @@ BMDash.service('BMDashService',
             eventStream.connected = true;
         }
     }
-
-    // Getters + Setters //
-    this.getEventStream = function(){
-        return this.eventStream.stream;
-    }
-
-    this.getDashboards = function(){
-        return this.dashboards.available;
-    }
-
-    this.getWidgets = function(){
-        return this.widgets.available;
-    }
-
 
 }]);
