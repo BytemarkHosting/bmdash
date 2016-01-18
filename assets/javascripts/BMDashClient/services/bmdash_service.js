@@ -18,7 +18,7 @@ BMDash.service('BMDashService',
     this.connectionState = {};
     this.lastUpdateRun = 0;
     this.lastUpdateTimout = 5 
-    this.connectionCheckWatcher = null;
+    this.connectionWatcher = null;
 
     // Functions //
     // Public Functions //
@@ -33,25 +33,13 @@ BMDash.service('BMDashService',
         this.eventStream.stream = this.eventStream.deferred.promise;
         this.eventStream.connected = false;
 
-        this.eventStream.stream.then(function(stream){
-            stream.onmessage = function(event){
-                $log.debug('BMDashService: Received a unamed event!');
-                $log.debug(event);
-            }
-            stream.onerror = function(event){
-                $log.debug('BMDashService: We hit an error boss! Closing the Stream!', event);
-                connection.close();
-            }
-            stream.addEventListener('ping', function(event){
-                data = JSON.parse(event.data);
-                $log.debug('BMDashService: PING:' +  data.time);
-            });
-        });
+
 
         // Setup Endpoints
         for(var i=0; i<this.bmdashEndPoints.length; i++){
            var point = this.bmdashEndPoints[i];
            this.bmdashData[point] = {};
+           this.bmdashData[point].name = point;
            this.bmdashData[point].endPoint = '/' + point ;
            this.bmdashData[point].deferred = $q.defer();
            this.bmdashData[point].available = this.bmdashData[point].deferred.promise;
@@ -61,21 +49,20 @@ BMDash.service('BMDashService',
     }
     
     this.getData = function(){
-        this.update = Date.now();
+        this.updated = Date.now();
         // Get data from endpoints
         for(var i=0; i<this.bmdashEndPoints.length; i++){
             var point = this.bmdashData[this.bmdashEndPoints[i]];
-            // This closure wraps around the success function for the http get 
-            // used when getting data from the server, it allows acecss to the 
-            // point object
-            var responder = function(point){
+
+            var responder = function(bmdash, point){
                 return function (response){
                     $log.debug('BMDashService: Received ' + point.endPoint + ' Data');
                     point.lastUpdate = Date.now();
                     point.deferred.resolve(response.data);
+                    bmdash.bmdashData[point.name] = response.data;
                 }
             }
-            $http.get(point.endPoint).then(responder(point),
+            $http.get(point.endPoint).then(responder(this, point),
                 // Fail
                 function(response){
                     $log.debug('BMDashService: Failed to get ' + point.endPoint + ' Data', response);
@@ -86,18 +73,63 @@ BMDash.service('BMDashService',
     }
 
     // Check the status of the event stream and data end points and 
-    this.checkStatus = function(){
+    this.checkConnection = function(bmdash){
         // Status vars
         var eventsConnected = false;
-        var endpointsFetched = false;
+        var endPointStatus = false;
 
         // Check eventStream is connected:
-        eventsConnected = (this.evenStream.stream.readyState == 1) ? true: false;
-        this.endpoints.forEach(function(){
+        console.log(bmdash.eventStream.stream);
+        console.log(bmdash.bmdashData);
+        eventsConnected = (bmdash.eventStream.stream.readyState == 1) ? true: false;
 
-        });
+        for(var i=0; i<bmdash.bmdashEndPoints.length; i++){
+            var point = bmdash.bmdashData[bmdash.bmdashEndPoints[i]];
+            var available = false;
+            if (point.available == null){
+                $log.debug('BMDashService: There is no data available for point ' 
+                        + point.name);
+            }else{
+                available = true;
+            }
+            endPointStatus = (endPointStatus && available);
+        }
 
-        this.connected = (eventsConnected && endpointsFetched);
+        var connStatus = (eventsConnected && endPointStatus);
+        $log.debug('BMDashService: Connection states' , 
+                eventsConnected, endPointStatus);
+
+
+        
+        // Decided the connection state of the app
+        //
+        // If we are conneted and the connection state hasn't changed, do 
+        // nothing
+        if(bmdash.connected && connStatus){
+            return true 
+        // If we are not connected and the connection state is good we are 
+        // connected
+        }else if ( !bmdash.connected && connStatus) {
+            $rootScope.$broadcast('ClientConnected');
+            bmdash.connected = true;
+            $log.debug('BMDashService: Client has Connected!');
+            return true
+        // if we are connected but the connection status is bad we have
+        // disconnected
+        }else if (bmdash.connected && !connStatus){
+            $rootScope.$broadcast('ClientDisconnected');
+            bmdash.connected = false;
+            $log.debug('BMDashService: Client has Disconnected!');
+            return false;
+        // else we not connected, connection state is failing and something is
+        // wrong
+        }else{
+            $rootScope.$broadcast('ClientConnectionIssue');
+            bmdash.connected = false;
+            $log.debug('BMDashService: Client connection issue!!');
+            return false;
+        }
+
     }
 
     this.connect = function(client_name, client_group){
@@ -106,14 +138,34 @@ BMDash.service('BMDashService',
         this.client_group = client_group;
 
         // Set up EventSource and connection checker
-        this.eventStream.connection = new EventSource('/events?name='+client_name+'&group='+client_group);
+        var connection = new EventSource('/events?name='+client_name+'&group='+client_group);
         this.eventStream.watcher = $interval(this.checkEventStream, 500, 
-            null, null, this.eventStream);
+            null, null, this.eventStream, connection);
+
+        var streamConnected = function(bmdash){
+            return function(stream){
+                bmdash.eventStream.stream = stream;
+                stream.onmessage = function(event){
+                    $log.debug('BMDashService: Received a unamed event!');
+                    $log.debug(event);
+                }
+                stream.onerror = function(event){
+                    $log.debug('BMDashService: We hit an error boss! Closing the Stream!', event);
+                    connection.close();
+                }
+                stream.addEventListener('ping', function(event){
+                    data = JSON.parse(event.data);
+                    $log.debug('BMDashService: PING:' +  data.time);
+                });
+            }
+        }
+        this.eventStream.stream.then(streamConnected(this));
+
 
         this.getData();
 
-        // Broadcast that we are done connecting
-        $rootScope.$broadcast('ClientConnected');
+        this.connectedWatcher = $interval(this.checkConnection, 1000, null, null,
+                this);
     }
 
     this.disconnect = function(){
@@ -142,8 +194,7 @@ BMDash.service('BMDashService',
     // updates the promise accordingly. If stream becomes connected it also
     // cancels the watcher that calls this method and resolves the promise
     // object to the resulting EventSource
-    this.checkEventStream = function(eventStream){
-        var connection = eventStream.connection;
+    this.checkEventStream = function(eventStream, connection){
         var deferred = eventStream.deferred;
 
         // Stream state connecting  
