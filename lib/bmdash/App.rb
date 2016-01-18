@@ -25,7 +25,8 @@ module BMDash
                 dashboard_path = File.join Dir.pwd, 'dashboards', dir
                 dashboard = YAML::load_file dashboard_path 
                 begin 
-                    settings.dashboards << Dashboard.new(dashboard)
+                    dash = Dashboard.new(dashboard)
+                    self.settings.dashboards[dash.name] = dash
                 rescue DashboardDefError => e
                     self.logger.error "#{dashboard_path} - #{e.message}" 
                     self.logger.error 'Skipping...'
@@ -33,13 +34,13 @@ module BMDash
             end
 
             self.logger.info 'Available Dashboards:'
-            self.settings.dashboards.each do |dash|
-                self.logger.info "    - #{dash.name}"
+            self.settings.dashboards.each do |name, dash|
+                self.logger.info "    - #{name}"
             end
         end
 
         def self.update_dashboards
-            self.dashboards.each do |dash|
+            self.dashboards.each do |name, dash|
                 dash.update
             end
         end
@@ -132,7 +133,7 @@ module BMDash
         end
 
         def self.send_dashboard_events
-            self.dashboards.each do |dash|
+            self.dashboards.each do |name, dash|
                 while ! dash.events.empty?
                     self.send_event dash.events.pop
                 end
@@ -169,7 +170,7 @@ module BMDash
             set :watcher, FileWatcher.new(['./widgets', './dashboards'])
             set :watcher_thread, nil
             set :connections, {}
-            set :dashboards, []
+            set :dashboards, {}
             set :groups, Hash.new {|h,k| h[k] = 0}
             set :events, []
             set :scripts, {}
@@ -311,9 +312,8 @@ module BMDash
 
         get '/dashboards/?', provides: 'application/json' do 
             hash = {}
-            hash['dashboards'] = []
-            settings.dashboards.each do |dash|
-               hash['dashboards']  << dash
+            settings.dashboards.each do |name, dash|
+               hash[name] = dash
             end
            JSON.pretty_generate hash 
         end
