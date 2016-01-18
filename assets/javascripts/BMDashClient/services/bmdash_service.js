@@ -59,7 +59,7 @@ BMDash.service('BMDashService',
                     $log.debug('BMDashService: Received ' + point.endPoint + ' Data');
                     point.lastUpdate = Date.now();
                     point.deferred.resolve(response.data);
-                    bmdash.bmdashData[point.name] = response.data;
+                    bmdash.bmdashData[point.name].available = response.data;
                 }
             }
             $http.get(point.endPoint).then(responder(this, point),
@@ -79,8 +79,6 @@ BMDash.service('BMDashService',
         var endPointStatus = false;
 
         // Check eventStream is connected:
-        console.log(bmdash.eventStream.stream);
-        console.log(bmdash.bmdashData);
         eventsConnected = (bmdash.eventStream.stream.readyState == 1) ? true: false;
 
         for(var i=0; i<bmdash.bmdashEndPoints.length; i++){
@@ -92,15 +90,10 @@ BMDash.service('BMDashService',
             }else{
                 available = true;
             }
-            endPointStatus = (endPointStatus && available);
+            endPointStatus = (endPointStatus || available);
         }
 
         var connStatus = (eventsConnected && endPointStatus);
-        $log.debug('BMDashService: Connection states' , 
-                eventsConnected, endPointStatus);
-
-
-        
         // Decided the connection state of the app
         //
         // If we are conneted and the connection state hasn't changed, do 
@@ -121,12 +114,11 @@ BMDash.service('BMDashService',
             bmdash.connected = false;
             $log.debug('BMDashService: Client has Disconnected!');
             return false;
-        // else we not connected, connection state is failing and something is
-        // wrong
+        // else we are probably trying to connected still
         }else{
-            $rootScope.$broadcast('ClientConnectionIssue');
+            $rootScope.$broadcast('ClientConnecting');
             bmdash.connected = false;
-            $log.debug('BMDashService: Client connection issue!!');
+            $log.debug('BMDashService: Client Conencting ...');
             return false;
         }
 
@@ -209,7 +201,7 @@ BMDash.service('BMDashService',
         }
         // Stream connected!
         if (connection.readyState == 1){
-            $log.debug('BMDashService:  Stream connected!');
+            $log.debug('BMDashService: Stream connected!');
             $interval.cancel(eventStream.watcher);
             deferred.resolve(connection);
             eventStream.connected = true;
