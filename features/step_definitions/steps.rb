@@ -1,14 +1,28 @@
 Given /^I am on the home page$/ do 
-   visit('/') 
+    visit('/') 
+end
+
+Given /^I am on the home page with paremeters$/ do
+    visit('/?client=test_client&group=testing') 
 end
 
 Then /^I should see the client infomrmation form$/ do
-    assert(page.has_css?('div#login'))
+    expect(page).to have_css('div#login') 
+end
+
+Given /^I have the the identifiers (.+) and (.+)$/ do |client, group|
+    form = page.find('div#login')
+    form.fill_in('client-name', with: client)
+    form.fill_in('client-group', with: group)
+    form.click()
+end
+
+Then /^I should not see the client information form$/ do
+    expect(page).to  have_css('#login', visible: false)
 end
 
 Then /^I should see a list of available dashboards$/ do 
-    dashboards = locate('#dashboard-list')
-    puts dashboards.inspect
     pending
 end
+
 
