@@ -4,7 +4,7 @@ Feature: User accesses web frontend
 
     Scenario: Login with no identifiers
         Given I am on the home page
-        Then I should see the client infomrmation form
+        Then I should see the client information form
 
     Scenario: Login and provide client name and group identifiers 
         Given I am on the home page
@@ -12,8 +12,8 @@ Feature: User accesses web frontend
         Then I should not see the client information form
         And I should see the list of dashboards
 
-    Scenario: Automatic login with GET paremeter identifiers 
-        Given I am on the home page with paremeters
+    Scenario: Automatic login with GET parameter identifiers 
+        Given I am on the home page with parameters
         Then I should not see the client information form
         And I should see the list of dashboards
 
