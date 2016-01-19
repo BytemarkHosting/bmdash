@@ -186,11 +186,11 @@ BMDash.service('BMDashService',
     }
 
     this.getDashboards = function(){
-        return this.dashboards.available;
+        return this.bmDashData['dashboards'].available;
     }
 
     this.getWidgets = function(){
-        return this.widgets.available;
+        return this.bmDashData['widgets'].available;
     }
 
     // Private Functions //
