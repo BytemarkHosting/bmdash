@@ -1,5 +1,5 @@
 // bmDash service is used to communicate with a bmDash server
-BMDash.service('BMDashService', 
+bmDash.service('bmDashService', 
     ['$q', '$interval', '$http', '$rootScope', '$log',
     function($q, $interval, $http, $rootScope, $log){
 

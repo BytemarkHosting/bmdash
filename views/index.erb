@@ -13,20 +13,45 @@
     <link rel="stylesheet" href="/assets/application.css?token=<%= @token %>" />
 </head>
 
-<body ng-app="BMDash">
+<body ng-app="bmDash">
 
     <div ng-controller="Main" id="Main">
-        <div ng-include="'login.html'" ng-hide"connected"></div>
-        <div ng-include="'dashboard.html'"></div>
+        <div ng-include="'login.html'" ng-hide="connected"></div>
+
+        <dashboard ng-if="connected">
+
+            <div id="dashboard-list" ng-hide="selected">
+                <h2>Dashboards:</h2>
+                <ul>
+                    <li ng-repeat="dash in dashboards" >
+                        <ul ng-click="select(dash)">
+                            <li><strong>{{ dash.name }}</strong></li>
+                            <li>{{ dash.desc }}</li>
+                            <li>{{ dash.author }}</li>
+                            <li>{{ dash.email}}</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="grid-container" ng-if="selected">                                                    
+                <ul id="grid" class="grid" ng-click="grid()">                                                 
+                    <li ng-repeat="widget in currentScreen.widgets" 
+                        data-x="{{ widget.col }}" data-y="{{ widget.row }}" 
+                        data-w="{{ widget.sizex }}" data-h="{{ widget.sizey }}">
+                        <div class="inner">{{ widget.name }}</div>
+                    </li>
+                </ul>                                                                       
+            </div>      
+
+    </dashboard>
     </div>
     
     <script src="/assets/application.js?token=<%= @token %>"></script>
     <script type="text/javascript">
-        BMDash.value('token' , "<%= @token %>");
-        BMDash.value('ClientName', '<%= (@client) ? @client : "" %>');
-        BMDash.value('ClientGroup', '<%= (@group) ? @group : "" %>');
-        BMDash.value('ClientDashboard', '<%= (@dashboard) ? @dashboard : "" %>');
-        var token = '<%= @token %>';
+        bmDash.value('ClientName', '<%= (@client) ? @client : "" %>');
+        bmDash.value('ClientGroup', '<%= (@group) ? @group : "" %>');
+        bmDash.value('ClientDashboard', '<%= (@dashboard) ? @dashboard : "" %>');
     </script>
   </body>
 </html>

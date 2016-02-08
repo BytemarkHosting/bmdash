@@ -1,7 +1,6 @@
-BMDash.controller('Main', 
-    ["$scope", "$interval", "$controller", "BMDashService", "WidgetService", 
-     "DashboardService",
-    function($scope, $interval, $controller, bmDashService, widgetService, dashboardService){
+bmDash.controller('Main', 
+    ["$scope", "$interval", "$controller", "bmDashService",
+    function($scope, $interval, $controller, bmDashService){
 
     $scope.stream = null;
     $scope.connected = false;
@@ -9,8 +8,6 @@ BMDash.controller('Main',
     $scope.setup = function(){
         console.log('MAIN', 'Setup called');
         bmDashService.init();
-//        dashboardService.update();
-//        widgetService.update();
 
         // Change connection status Depending on EventStream state
         bmDashService.getEventStream().then(function(obj){

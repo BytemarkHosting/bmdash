@@ -1,6 +1,6 @@
-BMDash.controller('Dashboard', 
-    ['$scope', 'DashboardService', 'WidgetService', 'ClientDashboard',
-    function($scope, dashboardService, widgetService, clientDashboard){
+BMDash.controller('DashboardCtrl', 
+    ['$scope', '$log', 'BMDashService', 'ClientDashboard',
+    function($scope, $log, bmDashService, clientDashboard){
 
     // Dashboard Controller is responsible for the creation and management of a
     // dashboard and all of it's widgets.
@@ -11,6 +11,7 @@ BMDash.controller('Dashboard',
 
     // The current loaded dashboard
     $scope.selected = null;
+    $scope.dashboards = null;
 
 
     // Watch for changes in the selected dashboard and initalise 
@@ -24,9 +25,9 @@ BMDash.controller('Dashboard',
 
     // Sets the selected dashboard, this can be triggerd from a view or
     // a controller
-    $scope.selectDashboard = function(dashboard){
+    $scope.select = function(dashboard){
         $scope.selected = dashboard;
-        console.log("DASHBOARD: '" + dashboard + "' selected");
+        $log.debug("DASHBOARD: '" + dashboard + "' selected");
     }
 
     // Start logic for the Dashboard controller
@@ -35,26 +36,30 @@ BMDash.controller('Dashboard',
     // broadcasted and the user is left to select from the available dashboards
 
     init = function(){
-        // Get The list of dashboards from the server
-        dashboardService.getAvailableDashboards().then(function(data){
-            $scope.dashboards = data.dashboards
-            console.log('DASHBOARD: Loaded dashboard data from server')
-            // Select dashboard automatically if one was provided
-            if (clientDashboard.length > 0){
-                $.grep($scope.dashboards, function(dashboard){
-                    if (dashboard.name == clientDashboard){
-                        $scope.selectDashboard(clientDashboard);
-                        $scope.setup();
-                    }
-                });
-            } else {
-                //TODO Error boradcast needed here
-            }
-        });
+        // Check if the constant was seeded and find any dashboards matching
+        if (clientDashboard.length > 0){
+            $log.debug('DASHBOARD: Found dashboard autoload constant!' +
+                    ' Trying to load ' + clientDasboard);
+            var foundDashboards = $.grep($scope.dashboards, function(dashboard){
+                if (dashboard.name == clientDashboard){
+                    return dashboard;
+                }
+            });
+
+            if(foundDashboards.length > 0){
+                $log.debug('Found dashboard(s) matching autoload constant! Loading first match');
+                $scope.selected = foundDashboards[0];
+                $scope.setup();
+            }else{
+                $log.debug('No dashboard(s) matching autoload constant. Showing list');
+            }                
+        }
+        // Check if we found a dashboard to auto load, if not show list of
+        // dashboards
+        if(this.selected == null){
+            
+        }
     }
-
-
-    $scope.$on('ClientConnected', init);
 
     var setup = function(){
         console.log('DASHBOARD: Setup called!')
@@ -66,5 +71,8 @@ BMDash.controller('Dashboard',
         console.log('DASHBOARD: Teardown called!')
         
     }
+
+    // Messages to act on
+    $scope.$on('ClientConnected', init);
 
 }]);

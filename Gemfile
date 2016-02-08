@@ -15,4 +15,7 @@ group :test do
      gem "cucumber"
      gem "capybara"
      gem "capybara-webkit"
+     gem 'capybara-angular'
+     gem 'poltergeist'
+     gem "rspec"
 end

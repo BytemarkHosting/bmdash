@@ -280,7 +280,6 @@ module BMDash
         end
 
         get %r{/assets/(.+)?/?} do 
-             pp params
              asset =  settings.assets.find_asset(params['captures'].first)
              if asset 
                  content_type asset.content_type
@@ -289,13 +288,6 @@ module BMDash
                 404
              end
         end 
-
-        get '/list_assets/' do 
-            pp settings.assets
-            settings.assets.logical_paths do  |log, file|
-                pp "#{log}  --  #{file}"
-            end
-        end
 
         get '/widgets' do 
                 json settings.widgets

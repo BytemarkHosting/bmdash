@@ -1,5 +1,5 @@
-BMDash.controller('Login', 
-    ['$scope', '$rootScope','ClientName', 'ClientGroup', 'BMDashService',
+bmDash.controller('Login', 
+    ['$scope', '$rootScope','ClientName', 'ClientGroup', 'bmDashService',
     function($scope, $rootScope, client, group, bmDashService){
 
         $scope.connected = false;
