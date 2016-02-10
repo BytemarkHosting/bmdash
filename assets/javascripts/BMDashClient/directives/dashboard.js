@@ -1,6 +1,6 @@
-bmDash.directive('dashboard', ['$log','bmDashService', 
+bmDash.directive('dashboard', ['$log','ClientDashboard','bmDashService', 
 
-    function($log, bmDashService){
+    function($log, clientDashboard, bmDashService){
 
     link = function(scope, element, attrs){
         scope.dashboards = bmDashService.getDashboards();
@@ -51,6 +51,16 @@ bmDash.directive('dashboard', ['$log','bmDashService',
             setup();
         }
         scope.$watch('selected', onSelect)
+
+       init = function(){
+            if (clientDashboard.length > 0){
+                var dash = scope.dashboards[clientDashboard];
+                if(dash){
+                    scope.select(dash);
+                }
+            }
+        }
+        init();
     }
 
     return {
