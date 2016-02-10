@@ -14,7 +14,7 @@ require_relative '../script/lib/script.rb'
 module BMDash
     class App < Sinatra::Base
 
-        NO_TOKEN = Event.format( {:event => 'no_token'} )
+        NO_TOKEN = Event.format( {:name => 'no_token'} )
 
         def self.load_dashboards
             self.logger.info 'Loading Dashboards:'
@@ -87,9 +87,9 @@ module BMDash
             self.connections.each do |token, client|
                 if client.token == nil
                    client.token = SecureRandom.uuid
-                   send_event 'welcome', ({
+                   send_event  ({
                         :id => Time.now,
-                        :event => "client_connection",
+                        :name => "client_connection",
                         :data => {
                             :msg => "Welcome #{client.name}",
                             :token => client.token
@@ -104,7 +104,10 @@ module BMDash
             self.logger.debug 'Currently Connected: '
             self.connections.each do |token, client|
                 self.logger.debug "   - #{client.name} - #{client.group}"
-                send_event 'ping', { :data => { :time => DateTime.now }}
+                send_event( {
+                    :name => 'ping',  
+                    :data => { :time => DateTime.now } 
+                })
             end
             self.logger.debug 'Current Groups:' 
             self.groups.each do |group, count|
@@ -127,7 +130,8 @@ module BMDash
         def self.send_script_events
             self.widgets.each do |name, widget|
                 while ! widget.script.events.empty?
-                    self.send_event 'widget_update', widget.script.events.pop
+                    self.send_event widget.script.events.pop
+                    
                 end
             end
         end
@@ -140,9 +144,8 @@ module BMDash
             end
         end
 
-        def self.send_event event_name, event
+        def self.send_event event
             begin
-                event[:event] = event_name
                 event = Event.format event
                 self.connections.each do |token, client|
                     if client.token

@@ -5,7 +5,7 @@ end
 
 def some_method
     @events.push({ 
-        :event => 'test_event' ,
+        :name => 'test_event' ,
         :data => {
             :a => 'This is A',
             :b => 'This is B'
