@@ -293,6 +293,15 @@ module BMDash
                 json settings.widgets
         end
 
+        get '/widgets/:widget_name/template.html' do |widget_name|
+            pp settings.widgets
+            if settings.widgets[widget_name] 
+                send_file settings.widgets[widget_name].html
+            else
+                return 404
+            end
+        end
+
         get '/events', provides: 'text/event-stream' do
           return 403 if params[:name].nil? || params[:group].nil?
           stream :keep_open do |out|

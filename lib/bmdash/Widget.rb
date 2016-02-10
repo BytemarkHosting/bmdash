@@ -4,11 +4,11 @@ module BMDash
 
     class Widget 
         attr_reader :name, :author, :email, :about, 
-                    :html, :script, :assets
+                    :html, :script, :assets, :instance
 
         def initialize info
             # Set basic Widget Details
-            %w(name author email about).each do |attr|
+            %w(name author email about instance).each do |attr|
                 if info.has_key? attr
                     instance_variable_set("@#{attr}", info[attr]) 
                 else

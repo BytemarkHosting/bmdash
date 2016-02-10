@@ -17,7 +17,7 @@
                     <li ng-repeat="widget in currentScreen.widgets"
                         data-x="{{ widget.col }}" data-y="{{ widget.row }}" 
                         data-w="{{ widget.sizex }}" data-h="{{ widget.sizey }}" >
-                        <div class="inner">{{ widget.name }}</div>
+                        <widget class="inner" type="{{ widget.type }}" instance="{{ widget.name }}"> </widget>
                     </li>
                 </ul>                                                                       
             </div>      

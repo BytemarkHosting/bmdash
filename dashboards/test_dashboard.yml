@@ -10,17 +10,20 @@ screens:
     - name: Screen 1
       timeout: 300
       widgets:
-            - name: fortune
+            - type: Fortune
+              name: Fortune Cookie
               col: 0
               row: 0
               sizex: 1
               sizey: 1
-            - name: test_widget
+            - type: test_widget
+              name: It's a Test
               col: 1
               row: 2
               sizex: 1
               sizey: 1
-            - name: test_widget
+            - type: Missing Widget
+              name: Oh Noes!
               col: 0
               row: 1
               sizex: 2
