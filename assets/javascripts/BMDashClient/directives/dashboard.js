@@ -1,4 +1,5 @@
 bmDash.directive('dashboard', ['$log','bmDashService', 
+
     function($log, bmDashService){
 
     link = function(scope, element, attrs){
@@ -18,10 +19,10 @@ bmDash.directive('dashboard', ['$log','bmDashService',
         }
         
         scope.grid = function(){
-            $('.grid').gridList({
-                lanes: 5
-            });
+
         }
+
+
 
         setup = function(){
             if (scope.selected){
@@ -36,6 +37,13 @@ bmDash.directive('dashboard', ['$log','bmDashService',
             scope.screens = dash.screens;
             scope.currentScreen = dash.screens[0];
             scope.widgetList = dash.widgets;
+
+            setTimeout(function(){
+                console.log('Grid Timeout!');
+                $('.grid').gridList({ 
+                    lanes: 3 
+                });
+            }, 250);
         }
 
         onSelect = function(value){
@@ -47,8 +55,9 @@ bmDash.directive('dashboard', ['$log','bmDashService',
 
     return {
         restrict: 'E',
-        link: link
-    };
+        link: link,
+        templateUrl: 'dashboard.html'
+    }
 }
 
 ]);

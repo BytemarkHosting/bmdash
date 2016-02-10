@@ -11,17 +11,17 @@ screens:
       timeout: 300
       widgets:
             - name: fortune
+              col: 0
+              row: 0
+              sizex: 1
+              sizey: 1
+            - name: test_widget
               col: 1
-              row: 1
+              row: 2
               sizex: 1
               sizey: 1
             - name: test_widget
-              col: 2
+              col: 0
               row: 1
-              sizex: 1
-              sizey: 1
-            - name: test_widget
-              col: 1 
-              row: 2 
               sizex: 2
               sizey: 1

@@ -2,18 +2,13 @@
  *= require jquery-ui
  */
 
+#dashboard-list { 
+}
 
-* {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-}
-body {
-  background: #E5E5E5;
-}
+
 .grid-container {
   position: absolute;
-  top: 66px;
+  top: 0px;
   left: 0;
   right: 10px;
   bottom: 0;
@@ -48,6 +43,9 @@ body {
                         height 0.2s,
                         font-size 0.2s,
                         line-height 0.2s;
+    height: 200px;
+    width: 200px;
+    transition: 'width, height' 0.5s;
   }
   .grid li .inner {
     position: absolute;
@@ -77,3 +75,5 @@ body {
       border: none;
       background: #ccc;
     }
+
+
