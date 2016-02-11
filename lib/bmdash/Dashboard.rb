@@ -62,7 +62,7 @@ module BMDash
             # Send event
             @events << {
                 :id => Time.now.nsec,
-                :event => "dashboard_update",
+                :name => "dashboard_update",
                 :data => {
                     :name => @name,
                     :screen => @current_screen
