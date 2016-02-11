@@ -11,11 +11,11 @@ The server is a Ruby application based on `sinatra` It provides:
 ## SSE Event (Server Sent Events) Stream
 Sever sent events are a mechanism for server to send updates to listening
 clients. It works similarily to [long HTTP polling][3] or [COMET][4], but has a
-defined structure with it's messages. Read more about it on [Mozilla Developer
+defined structure with its messages. Read more about it on [Mozilla Developer
 Netowrk][5] 
 
-Each widget can send it's own events that client side code can respond to. As 
-well as this bmdash will send it's own events to the client these are listed 
+Each widget can send its own events that client side code can respond to. As 
+well as this bmdash will send its own events to the client these are listed 
 below:
 
 ### client_connection
@@ -32,7 +32,7 @@ Any new files are loaded up, and any changed files will trigger a reload for
 that widget or dashboard.
 
 Once reloaded the clients get sent reload events to ensure the new changes are
-picked up
+picked up.
 
 
 [0]: https://github.com/sstephenson/sprockets

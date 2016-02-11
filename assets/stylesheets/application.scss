@@ -2,6 +2,18 @@
  *= require jquery-ui
  */
 
+@import url('//fonts.googleapis.com/css?family=Open+Sans:400italic,400,600,600italic');
+@import "base";
+@import "fonts";
+
+* {
+    font-family: $font-family;
+}
+
+h1, h2, h3 {
+    font-family: 'NeoTech-Regular';
+}
+
 #dashboard-list { 
 }
 
