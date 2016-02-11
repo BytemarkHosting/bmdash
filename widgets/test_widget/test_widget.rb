@@ -1,19 +1,20 @@
+require 'securerandom'  
+
 def setup 
-    @logger.info 'This is code from  test widget.  WOO!'
+    @logger.info 'Test Widget - Doomsday launch code provider'
 end
 
 
 def some_method
     @events.push({ 
-        :event => 'test_event' ,
+        :name => 'test_widget' ,
         :data => {
-            :a => 'This is A',
-            :b => 'This is B'
+            :a => "'#{SecureRandom.hex(8).upcase }' ",
+            :b => "'#{SecureRandom.hex(8).upcase }' "
         }
     })
 end
 
-@scheduler.every '10s' do 
-    logger.info "test_widget has made an event" 
+@scheduler.every '5s' do 
     some_method
 end
