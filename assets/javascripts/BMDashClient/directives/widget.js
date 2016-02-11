@@ -1,13 +1,24 @@
-bmDash.directive('widget', ['$compile','bmDashService', function($compile, bmDashService){
-
-    post_link = function(scope, element, attrs){
-        scope.eventStream = bmDashService.getEventStream();
-    }
+bmDash.directive('widget', ['bmDashService', function(bmDashService){
 
     pre_link = function(scope, element, attrs){
-        console.log('pre', attrs);
         scope.widgetType = attrs.type;
     }
+
+    post_link = function(scope, element, attrs){
+
+            stream = bmDashService.getEventStream();
+            // Setup event listener to get data for this widget
+            stream.addEventListener(scope.widgetType, function(event){
+                data = JSON.parse(event.data);
+                scope.$apply(function(){
+                    for (var k in data){
+                        scope[k] = data[k];
+                    }
+                })
+            });
+    }
+
+
 
     return {
         restrict: 'E',
@@ -19,6 +30,7 @@ bmDash.directive('widget', ['$compile','bmDashService', function($compile, bmDas
             $scope.getTemplateURL = function() {
                 return encodeURI('widgets/' + $scope.widgetType + '/template.html')    
             }
+
         },
         template: '<ng-include src="getTemplateURL()" />'
     }
