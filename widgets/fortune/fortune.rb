@@ -14,7 +14,7 @@ def my_fortune
         :name => 'Fortune' ,
         :data => {
             :time => Time.now.to_i,
-            :fortune => fortune
+            :latest_fortune => fortune
         }
     })
 end
