@@ -118,7 +118,7 @@ bmDash.service('bmDashService',
         }else{
             $rootScope.$broadcast('ClientConnecting');
             bmDash.connected = false;
-            $log.debug('bmDashService: Client Conencting ...');
+            $log.debug('bmDashService: Client connecting...');
             return false;
         }
 
