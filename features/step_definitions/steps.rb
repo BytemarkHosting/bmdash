@@ -2,7 +2,7 @@ Given /^I am on the home page$/ do
     visit('/') 
 end
 
-Given /^I am on the home page with paremeters$/ do
+Given /^I am on the home page with parameters$/ do
     visit('/?client=test_client&group=testing') 
 end
 
@@ -10,7 +10,7 @@ Then /^I should see the client information form$/ do
     expect(page).to have_css('div#login') 
 end
 
-Given /^I have the the identifiers (.+) and (.+)$/ do |client, group|
+Given /^I login with the identifiers (.+) and (.+)$/ do |client, group|
     form = page.find('div#login')
     form.fill_in('client-name', with: client)
     form.fill_in('client-group', with: group)
