@@ -9,4 +9,8 @@ include Capybara::Angular::DSL
 
 Capybara.app = BMDash::App
 #Capybara.default_driver = :webkit
-Capybara.default_driver = :poltergeist
+Capybara.register_driver :poltergeist_debug do |app|
+    Capybara::Poltergeist::Driver.new(app, :inspector => true)
+end
+
+Capybara.default_driver = :poltergeist_debug
