@@ -2,7 +2,7 @@ bmDash.directive('dashboard', ['$log','ClientDashboard','bmDashService',
 
     function($log, clientDashboard, bmDashService){
 
-    link = function(scope, element, attrs){
+    var link = function(scope, element, attrs){
         scope.dashboards = bmDashService.getDashboards();
         scope.selected = null; 
         scope.screen = null;
@@ -11,7 +11,7 @@ bmDash.directive('dashboard', ['$log','ClientDashboard','bmDashService',
         scope.widgetList = null;
 
         
-        tearDown = function(){
+        var tearDown = function(){
             if (scope.selected){
                 $log.debug('DASHBOARD: Tearing dashboad down');
             }
@@ -24,7 +24,7 @@ bmDash.directive('dashboard', ['$log','ClientDashboard','bmDashService',
 
 
 
-        setup = function(){
+        var setup = function(){
             if (scope.selected){
                 $log.debug('DASHBOARD: Setting up Dashboard ' + scope.selected.name);
                 console.log(scope.currentScreen);
@@ -46,13 +46,13 @@ bmDash.directive('dashboard', ['$log','ClientDashboard','bmDashService',
             }, 250);
         }
 
-        onSelect = function(value){
+        var onSelect = function(value){
             tearDown();
             setup();
         }
         scope.$watch('selected', onSelect)
 
-       init = function(){
+       var init = function(){
             if (clientDashboard.length > 0){
                 var dash = scope.dashboards[clientDashboard];
                 if(dash){
