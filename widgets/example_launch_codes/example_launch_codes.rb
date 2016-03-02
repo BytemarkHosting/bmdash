@@ -7,7 +7,7 @@ end
 
 def some_method
     @events.push({ 
-        :name => 'test_widget' ,
+        :name => 'example_launch_codes' ,
         :data => {
             :a => "'#{SecureRandom.hex(8).upcase }' ",
             :b => "'#{SecureRandom.hex(8).upcase }' "
