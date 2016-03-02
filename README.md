@@ -17,6 +17,22 @@ TODO:: Write software, then write about how to use it
 
 ## Development And Hacking
 
+Bundle install prerequisites:
+* Ruby 2.1 & development headers
+* zlib development libraries (zlib1g-dev on debian)
+* compilers n stuff (build-essential on debian)
+* Maybe liblzma-dev
+
+For testing, you'll also need these debian packages: qt5-default libqt5webkit5-dev gstreamer1.0-plugins-base gstreamer1.0-tools gstreamer1.0-x
+
+Install all those, then make sure ruby 2.1 is your current ruby.
+For debian, the command to install all prereqs is `apt-get install bundler ruby ruby-dev zlib1g-dev build-essential liblzma-dev`
+
+Gems can be installed with `bundle install --without test`, or if you installed all the test dependencies you can leave off the `--without test`
+
+`rackup -p 8080` to start the server.
+
+Alternatively, vagrant:
 For some ease, [Vagrant][0], [VirtualBox][1] and [Ansible][2] are used to make a
 development envrioment you can use with almost minimal effort. You will also 
 need to install the [Oracle VM VirtualBox Extension Pack][3] (or really you
