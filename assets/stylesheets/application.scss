@@ -66,6 +66,9 @@ fieldset, #dashboard-list {
     width: 200px;
     transition: 'width, height' 0.5s;
   }
+  .grid li * {
+    line-height: normal;
+  }
   .grid li .inner {
     position: absolute;
     bottom: 20px;
@@ -105,4 +108,27 @@ widget > ng-include {
 widget > ng-include > div {
     position:absolute;
     top:0;left:0;right:0;bottom:0;
+}
+
+widget >ng-include > div >  h1 {
+    margin: 4px 0;
+    overflow: hidden;
+    position:absolute;
+    top: 0;
+    left:0;right:0;
+    text-align:center;
+}
+widget > ng-include > div > div, widget > ng-include > div > p {
+    position:absolute;
+    top: 36px;
+    left:0;right:0;
+    margin: 4px;
+    text-align:center;
+
+}
+widget > ng-include > div > footer {
+    position: absolute;
+    bottom:0;left:0;right:0;
+    text-align: center;
+    margin: 4px 0;
 }
