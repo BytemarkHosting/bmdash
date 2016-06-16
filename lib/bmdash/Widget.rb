@@ -29,10 +29,11 @@ module BMDash
             script_path.downcase!
             if File.exists? script_path
                 @script = Script.load(script_path) do |script|
-                    script.__send__(:attr_accessor, 'scheduler', 'logger', 'events');
+                    script.__send__(:attr_accessor, 'scheduler', 'logger', 'events', 'widget');
                     script.__send__('scheduler=', Rufus::Scheduler.new)
                     script.__send__('logger=', BMDash.logger)
                     script.__send__('events=', Queue.new)
+		    script.__send__('widget=', info)
                 end
             else 
                 @script = nil

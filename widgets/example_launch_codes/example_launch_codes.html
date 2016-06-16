@@ -1,7 +1,19 @@
+<!-- This is the template file for the example_launch_codes widget.
+    Note that it must have the same name as the widget name.
+    First up: you can load css files - any stylesheets you dump in the "stylesheets" folder will be available under /assets.
+-->
+<link rel="stylesheet" type="text/css" href="/assets/example_launch_codes.css" />
+<!-- This id isn't necessary, it can just be a div! But it *must* be a div unless you want to have to style it yourself. -->
 <div id="example_launch_codes">
+    <!-- h1 tags inside a widget automatically get smooshed to the top -->
 	<h1>Launch Codes</h1>
+	<!-- there should be only one div child of the widget's main div.
+	 otherwise you'll have to fix up the styling yourself -->
 	<div>
-    <div class="test-widget-code-a">Code A: {{ a }}</div>
-    <div class="test-widget-code-b">Code B: {{ b }}</div>
+	    <!-- but you can do whatever you like inside the child div. -->
+	    <div class="test-widget-code-a">Code A: {{ a }}</div>
+	    <div class="test-widget-code-b">Code B: {{ b }}</div>
 	</div>
+	<!-- the footer tag automatically gets smooshed to the bottom. -->
+	<footer>Hey! I'm a footer</footer>
 </div>
